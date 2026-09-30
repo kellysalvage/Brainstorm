@@ -54,7 +54,7 @@ t LifeCheck|ulc
 ```
 
 ### Templated and read-only elements
-An element is marked as templated by putting `!` straight after its alias or type name, e.g. `s! Name`. Templated elements are the plan. They are copied whenever the item is copied, either on a scheduled date or when a program is published. All other elements are the record, and they start blank in every copy.
+An element is marked as templated by putting `!` straight after its alias or type name, e.g. `s! Name`. Templated elements are the plan. They are copied whenever the item is copied, either on a scheduled date or when someone starts a program. All other elements are the record, and they start blank in every copy.
 
 Putting `!!` after the alias, e.g. `s!! Instructions`, marks the element as templated and read-only. It is copied like any templated element, but the element itself is locked in the copy:
 * A simple element, such as text or a number, can not be changed. This is useful for text such as the description of a published lesson or plan.
@@ -134,7 +134,7 @@ If an element used by a condition is blank, the condition is not checked. The bl
 ### Calculated values
 A calculated value is worked out from other elements on the same item. It is declared by putting `=` straight after the alias, followed by a formula between brackets. The brackets mean the formula can contain spaces. For example:
 ```
-c RiskType
+c ProjectRiskType
     Financial
     Reputational
     HealthAndSafety
@@ -145,7 +145,7 @@ t ProjectRisk|upr
     s+!                           Name|Name|A short name for the risk
     i|0..100                      Likelihood|Likelihood (%)|How likely the risk is to happen, from 0 to 100%
     n|0..                         Impact|Impact|What it would cost if it happened
-    RiskType                      RiskType|Risk Type|The kind of harm the risk would cause, which shapes what its impact means
+    ProjectRiskType               RiskType|Risk Type|The kind of harm the risk would cause, which shapes what its impact means
     n=(Likelihood / 100 * Impact) RiskScore|Risk Score|The cost of the risk once its likelihood is taken into account
 ```
 Watch the units in a formula. Likelihood is a percentage from 0 to 100, so it is divided by 100. Without that, a 50% chance of a 10,000 loss would give a risk score of 500,000 instead of 5,000.
@@ -234,19 +234,17 @@ t TaskItem|tt
     d CreatedDate|Created Date|The date and time the task was created
     TaskStatus Status|Status|The status of the task
     i Priority|Priority|When a task appears in a list priority can be used to sort them.  
-    d DueDate|Due Date|The date and time the task should be done by
+    d! StartDate|Start Date|When the task will be started
+    d! DueDate|Due Date|The date and time the task should be done by
+    n!|0.. Estimate|Estimate (hours)|How long the task is expected to take
+    n!|0.. Cost|Cost|What the task costs, if anything
+    tc AssignedTo|Assigned To|Who will do the task
     tu CreatedBy|Created By|The user that created the task
     d CompletedOn|Completed On|The date and time the task was done
     l:tt SubTasks|Sub-tasks|The task has been broken down into smaller tasks and can be considered complete when the sub tasks are all done.
+    ts Schedule|Repeats|Optional. Makes the task repeat, such as a weekly gym session or a monthly bill payment.
 ```
-* t ScheduledTask|tst
-    A task that repeats on its own schedule. It is always a root item and is never placed inside another item.
-**Definition**
-```
-x ScheduledTask:TaskItem|tst
-    A task that is created again on a schedule, such as a weekly visit or a monthly bill payment.
-    ts Schedule|Repeats|When and how often the task is created again
-```
+StartDate and DueDate are templated so that relative dates, such as `+2d`, are carried into copies. Any task with a Schedule repeats, wherever it is. See Repeating items.
 * t Contact|tc
     A contact with contact details such as a phone number, email address, etc. 
     **Definition**
@@ -275,18 +273,110 @@ t contact|tc
     b IsActive|Is Active|True if the user is actively using the system.
 ```
 * t Goal|tg
+    Something you want to achieve, why you want it, and what stands in the way.
+    **Definition**
+```
+t Goal|tg
+    Something you want to achieve, why you want it, and what stands in the way.
+    s+!      Name|Goal|A short name for the goal
+    s!       Description|Description|What achieving this goal looks like
+    dd!      TargetDate|Target Date|When you want to have achieved it
+    i!|1..   Priority|Priority|1 is the most important
+    l:s      Reasons|Why|Why you want this. Keep asking why until you reach the real reason.
+    l:tm     Milestones|Milestones|Measurable points on the way to the goal
+    l:tt     Actions|Actions|The tasks that move you towards the goal. A task with a schedule is a regular action.
+    l:tr     Risks|Risks|What could stop you
+    l:tg     SubGoals|Sub-goals|Smaller goals that make up this one
+```
+* t Milestone|tm
+    A measurable point on the way to a goal.
+    **Definition**
+```
+t Milestone|tm
+    A measurable point on the way to a goal.
+    s+!      Name|Milestone|What will be true when you reach it
+    dd!      TargetDate|Target Date|When you want to reach it
+    s!       Measure|Measure|What you measure, e.g. body fat (%)
+    n!       Target|Target|The value you want to reach
+    n        Actual|Actual|The value you reached
+```
 * t Risk|tr
+    Something that could stop you or hurt you. A risk is rated twice: as it is now, and as it will be once its controls are in place. Controls often overlap, so the remaining risk is rated by judgement rather than worked out from the controls.
+    **Definition**
+```
+t Risk|tr
+    Something that could stop you or hurt you: how likely it is, how bad it would be, and what is left once it is controlled.
+    s+!                                                   Name|Risk|e.g. "Losing income if I get sick"
+    s!                                                    Cause|Cause|Why it might happen
+    s!                                                    Consequence|Consequence|What would happen if it did
+    RiskType+!                                            RiskType|Risk Type|The main kind of harm it would cause
+    i+|1..10                                              Likelihood|Likelihood|1 is very unlikely, 10 is almost certain
+    i+|1..10                                              Severity|Severity|How bad it would feel, from 1 (meh) to 10 (life changing)
+    n|0..                                                 FinancialImpact|Financial Impact|What it would cost in money, if it has a cost
+    n=(Severity * Likelihood / 10)                        RiskScore|Risk Score|Ranks every risk on the same scale
+    n=(FinancialImpact * Likelihood / 10)                 ExpectedLoss|Expected Loss|The cost once its likelihood is taken into account
+    b                                                     Accepted|Accepted|True if you can live with this risk and will not control it
+    l:trc                                                 Controls|Controls|What you will do about it
+    i|1..10|(ResidualLikelihood <= Likelihood)            ResidualLikelihood|Likelihood After Controls|How likely it is once your controls are in place
+    i|1..10|(ResidualSeverity <= Severity)                ResidualSeverity|Severity After Controls|How bad it would be once your controls are in place
+    n|0..|(ResidualFinancialImpact <= FinancialImpact)    ResidualFinancialImpact|Financial Impact After Controls|What it would cost once your controls are in place
+    n=(ResidualSeverity * ResidualLikelihood / 10)        ResidualScore|Residual Score|The risk that is left once your controls are in place
+    n=(ResidualFinancialImpact * ResidualLikelihood / 10) ResidualExpectedLoss|Residual Expected Loss|The cost that is left once your controls are in place
+```
+Every risk has a Severity, including financial ones, so that all risks can be ranked together by RiskScore. A financial risk also has a FinancialImpact in money, which gives its ExpectedLoss. Each field has one unit: Severity is always 1 to 10, and FinancialImpact is always money.
 * t Control|trc
+    Something you do to stop a risk happening, or to limit the damage if it does.
+    **Definition**
+```
+t Control|trc
+    Something you do to stop a risk happening, or to limit the damage if it does.
+    s+!             Name|Control|e.g. "Take out income protection insurance"
+    ControlType+!   ControlType|Type|Prevent stops the risk happening. ReduceImpact limits the damage if it does.
+    i!|0..100       Effectiveness|Effectiveness (%)|How much of the risk you expect this control to remove
+    n!|0..          Cost|Cost|What it costs to put the control in place
+    l:tt            Tasks|Tasks|The tasks that put the control in place, in the order they are done
+```
+Effectiveness and Cost are used together to decide whether a control is worth doing. A Prevent control lowers the residual likelihood of its risk, and a ReduceImpact control lowers its residual severity or financial impact.
 * t Assessment|ta
+    A snapshot of where you are now, so that you can compare it later.
+    **Definition**
+```
+t Assessment|ta
+    A snapshot of where you are now, so that you can compare it later.
+    s+!             Name|Assessment|e.g. "Health check"
+    dd              Date|Date|When the measurements were taken
+    ts              Schedule|Repeats|How often to take the snapshot
+    l:tai+          Items|Measurements|What you measure
+```
+* t AssessedItem|tai
+    One thing you measure in an assessment.
+    **Definition**
+```
+t AssessedItem|tai
+    One thing you measure in an assessment.
+    s+!!            Name|Measure|e.g. Weight. Locked in copies so that results stay comparable.
+    s!              Area|Area|The part of life it belongs to, e.g. Health
+    s!              Unit|Unit|e.g. kg, $, or 1-10 for a rating
+    s!              HowMeasured|How Measured|How to measure it the same way each time
+    n+              Value|Value|The measurement
+```
 * t Schedule|ts
-    A schedule says when a new copy of an item should be created. A root item with a Schedule element is repeated on that schedule. See Repeating items.
+    A schedule says when a new copy of an item should be created. See Schedules for how to write one.
+    **Definition**
+```
+t Schedule|ts
+    A schedule says when a new copy of an item should be created.
     s Name|Name|A short name for the schedule, e.g. "Monthly check-in"
     Frequency Repeats|Repeats|How often a new copy is created
-    i Every|Every|Repeat every N periods: 1 is every month, 2 is every other month. Missing means 1.
-    dd StartDate|Starts|The date of the first copy. It also sets the day, e.g. starting on the 5th means monthly on the 5th.
+    i|1.. Every|Every|Repeat every N periods: 1 is every month, 2 is every other month. Missing means 1.
+    dd StartDate|Starts|The date of the first copy. It also sets the day, e.g. starting on the 5th means monthly on the 5th. It can be a relative date, such as +1d.
     dd EndDate|Ends|Optional. No copies are created after this date.
-    dt DueTime|Due At|Optional time of day the copy is due
+    dt DueTime|Due At|Optional time of day the copy is due, in the user's own time zone
+    s On|On|Optional. Which days, e.g. "Mon, Wed, Fri", "weekdays", or "last Fri" for a monthly schedule
+    i|1.. Times|Times|Optional. Stop after this many copies, e.g. 12 sessions
+    s Rule|Calendar Rule|For experts: an iCalendar RRULE, used instead of Repeats, Every, On, Times and EndDate
     dd NextDate|Next Date|Set by the system: the date the next copy will be created
+```
 
 ### Built-in choices
 ContactDetailType - used in contact detail to select a type. 
@@ -304,7 +394,6 @@ c ContactDetailType
 Frequency is the choice for setting up schedules
 ```
 c Frequency
-    Once
     Daily
     Weekly
     Monthly
@@ -322,6 +411,22 @@ c TaskStatus
     Done
     Dropped
 ```
+RiskType is the main kind of harm a risk would cause
+```
+c RiskType
+    Social
+    Financial
+    Emotional
+    Legal
+    Health
+    Reputational
+```
+ControlType says how a control deals with a risk
+```
+c ControlType
+    Prevent
+    ReduceImpact
+```
 
 ### Extending types
 It can often be the case that you want some new peice of data on an existing type. For example, in the Task you may want to add a new element to allow you to delegate that task to a contact. In this case it is better, in fact essential, to extend the task rather than copy and paste it's definition, so that the system can still recognise the item as a task. Here is how you would implement such a change:
@@ -331,6 +436,8 @@ x DelegatedTask:TaskITem|udt
     tc DelegatedTo|Delegate|The person that is responsible for the task completion.
 ```
 The declaration of this is similar to the declaration of a normal type, but starts with x and must have a colon between the name of the new type and the type that it extends. The description of this new type will be used instead of the description of the type that it extends. All other elements can be appended in the same manner as they are declared in a normal complex type. Any duplicates are simply ignored.
+
+An extended type can be used anywhere the type it extends can be used. For example, a list of tasks can hold delegated tasks. See Shorthand for how a list item's type is chosen.
 
 Simple types can be extended too. This is how a rule is given a name, so that people can use it without having to read or write it. The rules are written after the alias, each starting with a pipe. For example, an email address is text that matches a pattern:
 ```
@@ -350,20 +457,10 @@ For a name to be valid, these simple rules must be followed:
 
 ## Brainstorm documents
 A brainstorm document is a text document, similar to markdown, that allows us to quickly list items in meaningful ways, without having to do data capture on some form or spreadsheet. This saves us from having to navigate between controls on pages, click save a hundred times and wait for excel to think when we want to add an item.
-Some use cases are quickly creating action plans, identifying risks and controls, setting goals and planning how to achieve them. For example given a type goal defined as follows:
-```
-t Goal|ug
-    A goal is an aim, purpose or desired result that you work hard to achieve
-    s Name|Goal|A short name to remind me of the goal
-    s Description|Description|A full description of what I am trying to achieve
-    d TargetDate|Target Date|The date by which I will achieve this goal
-    s Reason|Reason|It's good to understand why I am chasing a goal and whether it is worth the effort. This is a reminder.
-    l:tt PlanTasks|Plan|A list of the tasks that I need to do in order to achieve this goal.
-```
-I can now create a goal with a list of tasks easily as follows:
+Some use cases are quickly creating action plans, identifying risks and controls, setting goals and planning how to achieve them. For example, using the built-in Goal type (see Built-in complex types), I can create a goal with a list of tasks easily as follows:
 ```
 Goal: Book a holiday
-    PlanTasks:
+    Actions:
     * Find a sunny destination wich fits into my budget
     * find the best flights
     * book a hotel
@@ -381,6 +478,9 @@ The rules are:
 * An indented line sets an element of the item above it. The word before the colon is an element.
 * Only the first colon on a line separates the name from the value, so values can contain colons, as in `DueTime: 9:00 am`.
 * A list element is written as its name and a colon with no value, followed by its items, each starting with `*`.
+* A list item has the type of its list, unless it uses an element that only an extension of that type has. Then it becomes that extension. For example, in a list of tasks, an item with a `DelegatedTo:` line becomes a DelegatedTask (see Extending types).
+* To choose the type of a list item yourself, start the item with the type and a colon, e.g. `* udt: Book the venue`. This makes the item a DelegatedTask even before you know who to delegate it to. It is also how to choose when two extensions share an element name and the system can not tell which one is meant. Until you choose, such an item is flagged.
+* Wherever a document names a type, its alias can be used instead. `udt: Book the venue` and `DelegatedTask: Book the venue` mean the same thing.
 * A complex element, such as a Schedule, can use shorthand after its colon. Its other elements are indented one level further below it.
 * Values on the line follow the order the elements are declared in the type, starting at Name. The type description belongs to the type, not to each item, so it never takes a position.
 * Only simple elements take a position: text, numbers, dates, times, true/false values and choices. Lists and complex elements are skipped when counting positions and are always written below the line.
@@ -390,14 +490,30 @@ The rules are:
 
 Because an extended type adds its elements after those of the type it extends, shorthand written for the original type still works for the extended one.
 
-Using the Goal type above, the values on the line are Name, Description, TargetDate and Reason, in that order. Here the Reason is written below the line instead:
+Using the Goal type, the values on the line are Name, Description, TargetDate and Priority, in that order. Here the Priority is written below the line instead, and the reasons are a list:
 ```
 Goal: Book a holiday|Sun, sea and no laptop|2027-03-01
-    Reason: I haven't had a proper break in two years
-    PlanTasks:
+    Priority: 2
+    Reasons:
+    * I haven't had a proper break in two years
+    Actions:
     * Find a sunny destination wich fits into my budget
     * find the best flights
     * book a hotel
+```
+
+### Relative dates
+A date can be written relative to a start date, using `+` followed by a number and a unit: `d` for days, `w` for weeks, `m` for months and `y` for years. Words are also accepted, so `+2w` and `+2 weeks` mean the same thing.
+
+Relative dates are how a plan says "when" without knowing when it will be followed. They stay relative in the document they are written in, and the app shows them as, for example, "2 weeks after start". They are given a real date when a copy is made. See Repeating items.
+```
+Goal: Run a 5k|Go from the sofa to running 5k without stopping|+12w
+    Milestones:
+    * Run 1k without stopping|+3w
+    * Run 3k without stopping|+8w
+    Actions:
+    * Buy running shoes
+        DueDate: +2d
 ```
 
 ### When problems are reported
@@ -427,19 +543,40 @@ t LifeCheck|ulc
 ### Repeating items
 Structures are a way of knowing what tasks need to be done and why. Repeating an item is how the system creates the next round of tasks.
 
-A schedule only counts on a root item, which is an item that is not inside another item. To repeat a single task, use a ScheduledTask. A schedule on a nested item is ignored.
+An item with a schedule repeats wherever it is:
+* An item in a list gets its copies added to the same list. For example, a task with a schedule in the actions of a goal adds a new task to those actions each time it repeats.
+* A root item, which is an item that is not inside another item, gets its copies added as new root items.
+* A single complex element that is not in a list can not hold a second copy, so a schedule there is ignored.
 
-The item you write is the original. The system creates a copy of it on each scheduled date, and the same rules are used when a program is published:
+Lists of copies grow over time. The copies are the record of what was done, so they are kept. The app hides finished tasks by default, and users can set a retention policy to delete old data after a period of their choice.
+
+#### Occurrences and starts
+The item that is copied is the original. There are two kinds of copy:
+* An **occurrence** is one more round of a repeating item. It is created by a schedule, or by hand.
+* A **start** is someone's own copy of a whole program, created when they start following it.
+
+Both kinds of copy follow the same rules:
 * Only templated elements, marked with `!` or `!!`, are copied. All other elements start blank, so they can be filled in on the day and compared with earlier copies.
 * Elements marked with `!!` are locked in the copy: simple values can not be changed, lists can not have items added or removed, and complex elements can not be deleted.
 * Lists are always copied, whether or not they are marked. Each item in a list is created using the `!` and `!!` marks of its own type. A list of simple values, such as `l:s`, is copied as it is.
 * A templated complex element is copied the same way: its own elements follow the `!` and `!!` marks of its type.
-* If Name is templated, a scheduled copy gets the date added to it, e.g. "Life check 2026-10-01".
-* Every task in the copy, at any depth, has the Status ToDo and a DueDate of the scheduled date, plus the DueTime if one is set.
-* The Schedule is not templated, so the copy has no schedule and only the original repeats. A copy of a ScheduledTask is a plain TaskItem.
-* No copy is created while the original's plan has problems. See When problems are reported. A scheduled date that passes while the plan has problems is skipped. It is not caught up automatically once the plan is fixed.
+* If Name is templated, an occurrence gets the date added to it, e.g. "Life check 2026-10-01".
+* Every task in the copy, at any depth, has the Status ToDo.
 
-A user can also create a copy by hand, for example to make up for a skipped date. The user picks the date of the copy, which defaults to today, and the copy is created using the same rules as a scheduled copy. The plan must have no problems, just as for a scheduled copy. Creating a copy by hand does not change the schedule.
+Dates in the copy are worked out from the copy date. For an occurrence created by a schedule, this is the scheduled date. For an occurrence created by hand, it is the date the user picks. For a start, it is the day the follower starts the program.
+* A relative date becomes the copy date plus its offset. A task due `+2d` in a copy made on 2026-10-01 is due on 2026-10-03.
+* A task with no DueDate is due on the copy date, at the DueTime of the schedule if one is set.
+* A date that is not relative is copied as it is.
+
+The one difference between the two kinds of copy is what happens to the schedules inside them. Schedules are never templated: the kind of copy decides.
+* An occurrence has no schedules. This stops copies from creating more copies, so only the original repeats. An occurrence of a repeating task is an ordinary task.
+* A start keeps its schedules, so the habits in a program begin repeating on the day the follower starts it. A relative StartDate, such as `+1d`, becomes a real date.
+
+No occurrence is created while the original's plan has problems. See When problems are reported. A scheduled date that passes while the plan has problems is skipped. It is not caught up automatically once the plan is fixed.
+
+A user can also create an occurrence by hand, for example to make up for a skipped date. The user picks the date of the copy, which defaults to today. The plan must have no problems, just as for a scheduled occurrence. Creating an occurrence by hand does not change the schedule.
+
+To follow your own program, you start it like anyone else.
 
 For example, using the LifeCheck type above, this is the original a user writes:
 ```
@@ -461,12 +598,78 @@ LifeCheck: Life check 2026-10-01
     * Take my resting heart rate
     * Update the net worth spreadsheet
 ```
-A single task that repeats is written as a ScheduledTask. This one is created every other Wednesday:
+Any task repeats once it has a schedule. This one is created every other Wednesday:
 ```
-ScheduledTask: Visit mom|Pop round for tea and help with the garden
+TaskItem: Visit mom|Pop round for tea and help with the garden
     Schedule: Every other Wednesday|Weekly|2|2026-09-30
         DueTime: 9:00 am
 ```
+A repeating task can also sit inside a goal, so that a regular action stays with the goal it serves. Each session is added to the goal's actions, and appears on the goal's kanban board and in the user's tasks:
+```
+Goal: Get fit by summer|Strong, lean and able to run 10k|2027-06-01
+    Actions:
+    * Gym session|Strength and cardio, 45 minutes
+        Schedule: Weekly gym|Weekly||2026-10-05
+    * Book a session with a personal trainer
+```
+
+### Schedules
+A schedule is written as a Schedule element under the item that repeats. The line after `Schedule:` is shorthand for its Name, Repeats, Every and StartDate, and the other elements go on the lines below it:
+```
+* Gym session|Strength and cardio, 45 minutes
+    Schedule: Gym|Weekly||2026-10-05
+        On: Mon, Wed, Fri
+        DueTime: 7:00 am
+```
+The app always shows a schedule back in plain words, with the next few dates, so you can check it says what you meant. For example: "Every Mon, Wed and Fri at 7:00 am, starting 5 Oct 2026. Next: 5 Oct, 7 Oct, 9 Oct."
+
+#### Recipes
+| What you want | What you write |
+|---------------|----------------|
+| Every day | `Daily` |
+| Every weekday | `Weekly`, with `On: weekdays` |
+| Three times a week | `Weekly`, with `On: Mon, Wed, Fri` |
+| Every other Tuesday | `Weekly`, Every `2`, with `On: Tue` |
+| On the 1st of every month | `Monthly`, starting on the 1st of a month |
+| The last Friday of every month | `Monthly`, with `On: last Fri` |
+| Every three months | `Quarterly` |
+| Once a year | `Yearly`, starting on the date you want each year |
+| 12 weekly sessions | `Weekly`, with `Times: 12` |
+| Daily for 30 days, starting the day after a program starts | `Daily`, starting `+1d`, with `Times: 30` |
+| Just once | No schedule: give the task a DueDate instead |
+
+#### Writing On
+`On` says which days a schedule falls on. It is a list of days separated by commas:
+* Day names: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat` and `Sun`. Full names, such as `Monday`, are also accepted.
+* `weekdays` means Monday to Friday, and `weekends` means Saturday and Sunday.
+* For a monthly or yearly schedule, a day can have a position in front of it: `1st`, `2nd`, `3rd`, `4th` or `last`. For example, `1st Mon` or `last Fri`.
+
+If `On` can not be understood, it is flagged, like any other value that can not be understood.
+
+#### Times and time zones
+DueTime is always the user's own local time. A program that says 7:00 am means 7:00 am wherever the person following it lives, which matters because programs can be followed anywhere in the world.
+
+#### Calendar rules, for experts
+Schedules are worked out using the recurrence rules of iCalendar, the standard used by Google Calendar, Outlook and Apple Calendar. This means the app can also publish your tasks and habits as a calendar feed, so that they appear in the calendar you already use.
+
+Anything the elements above can not express can be written as an iCalendar rule in the Rule element. A Rule is used instead of Repeats, Every, On, Times and EndDate. StartDate and DueTime still apply. For example, the last working day of every month:
+```
+    Schedule: Month end report|||2026-10-01
+        Rule: FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1
+```
+The full rule syntax is defined in section 3.3.10 of the iCalendar standard, RFC 5545. Like patterns, rules are for experts: most schedules never need one.
+
+For those building the system, each Schedule is turned into an iCalendar rule:
+
+| Schedule element | iCalendar rule part |
+|------------------|---------------------|
+| Repeats | `FREQ`. Quarterly is `FREQ=MONTHLY` with `INTERVAL=3`. |
+| Every | `INTERVAL` |
+| On | `BYDAY`, with positions such as `1MO` or `-1FR` |
+| Times | `COUNT` |
+| EndDate | `UNTIL` |
+| StartDate and DueTime | `DTSTART`, as a floating local time |
+
 # Advanced: functions
 This section is for authors of structure documents who find themselves writing the same formula more than once. Nobody needs functions to write a brainstorm document, and most structures will never need them.
 
