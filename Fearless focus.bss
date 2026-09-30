@@ -1,0 +1,123 @@
+# Fearless Focus
+
+This structure turns the book *Fearless Focus* into a plan you can follow: where you are now, who you want to be, what you want and why, what stands in your way, and the daily and weekly habits that keep you moving.
+
+It builds on the built-in types. Goals, milestones, risks, controls, assessments and tasks come from Brainstorm itself, and this structure adds what is particular to the book.
+
+## The plan
+
+Everything in the book hangs off one plan. In the app, the plan is the top of the tree, and its kanban board shows every task in it.
+
+```bss
+t FocusPlan|ufp
+    """
+    Your Fearless Focus plan: where you are now, who you want to be, what you want and why,
+    what stands in your way, and the daily and weekly habits that keep you moving.
+    """
+    s+!     Name|Plan|A name for your plan, e.g. "My Fearless Focus plan"
+    s       WhoIWantToBe|Who I Want To Be|The kind of person you want to become. Your goals should move you towards this person.
+    ufa     Affirmation|Focus Affirmation|The one statement you practise every day
+    uvb     Vision|Vision Board|What you want your life to look like
+    l:ta    Assessments|Where I Am|Snapshots of your health, relationships, money and mind, to compare as you go
+    l:ufg   Goals|Goals|What you want. Your top three have priorities 1, 2 and 3.
+    l:tt    Routine|Routine|Your regular sessions, such as morning planning and affirmation practice
+    l:udr   DailyReviews|Daily Reviews|Your evening reviews and journal
+    l:uwr   WeeklyReviews|Weekly Reviews|Your weekly planning sessions
+```
+
+## Goals
+
+Chapters 3 to 5 are about knowing what you want, knowing why, and making sure your goals are really yours. A goal can also be laid to rest by a conscious decision (chapters 1 and 17), rather than left on the shelf.
+
+```bss
+c GoalStatus
+    Active
+    OnHold
+    Achieved
+    LaidToRest
+
+x FocusGoal:Goal|ufg
+    A goal you have made your own: you know why you want it, how it will feel, and whether you will pursue it or lay it to rest.
+    GoalStatus=Active  Status|Status|Active, on hold, achieved, or laid to rest by a conscious decision
+    b                  ForSomeoneElse|For Someone Else|True if you want this mainly to please or impress someone else. Consider replacing it with a goal you really want.
+    s                  Feeling|How It Will Feel|How you will feel when you have achieved it. If it does not excite you, it may not be the right goal.
+```
+
+## Actions
+
+Chapter 9 asks you to say, for every action, what outcome you expect and how you will measure it, so that you can tell whether it worked. An action is a task with those extra details. A task in a goal's actions becomes an Action as soon as it has one of them, such as `ExpectedOutcome:`.
+
+```bss
+x Action:TaskItem|uac
+    An action towards a goal, with the outcome you expect, so that you can tell whether it worked.
+    s!      ExpectedOutcome|Expected Outcome|What should happen if this action works
+    s!      Measure|How To Measure|How you will measure the outcome
+    dd!     OutcomeBy|Outcome Expected By|When you expect to see the outcome. Can be relative, e.g. +2w.
+    s       ActualOutcome|Actual Outcome|What actually happened
+    b       Worked|It Worked|True if the action moved you towards the goal
+```
+
+## Fears, obstacles and doubts
+
+Chapters 13 to 16 treat fears, practical obstacles and other people's doubts all as risks, so that they can be measured and faced. If you can not rate how bad a risk would be, chapter 16 suggests working it out from how long you would suffer, compared with how long you are willing to suffer.
+
+```bss
+c RiskSource
+    Fear
+    Obstacle
+    OthersDoubt
+
+x FocusRisk:Risk|ufr
+    A fear, obstacle or doubt that stands between you and a goal, measured so that it can be faced.
+    RiskSource+!                                            Source|Source|A fear, a practical obstacle, or a doubt someone else has raised
+    s                                                       WhyItMatters|Why It Would Be So Bad|Why you rated its severity as you did. Ask "really?" until you reach the real reason.
+    n|0..                                                   ExpectedSuffering|Expected Suffering (months)|If you can not rate the severity: how long you expect to suffer if it happens
+    n|0..                                                   AcceptableSuffering|Acceptable Suffering (months)|The longest you are willing to suffer to make your goal happen
+    n=(ExpectedSuffering / AcceptableSuffering * 10)|..10   SuggestedSeverity|Suggested Severity|A guide for Severity. Over 10 means more suffering than you are willing to accept.
+```
+
+## Vision and affirmation
+
+Chapter 6 builds a vision board you see every day, and chapter 7 merges two or three affirmations into one powerful statement.
+
+```bss
+t VisionBoard|uvb
+    What you want your life to look like, kept somewhere you will see it every day.
+    s+      Name|Vision|A name for your vision
+    l:img   Pictures|What I See|The things, places, people and lifestyle you want in your life
+
+t FocusAffirmation|ufa
+    One short, powerful statement made from the two or three affirmations that resonate most with you.
+    s+      Name|Affirmation|Your focus affirmation, short enough to remember
+    l:s     Sources|Built From|The affirmations you merged to make it
+```
+
+## Daily and weekly reviews
+
+Chapters 10 and 11 set up an evening review and a weekly planning session. Each review is a repeating item: the plan holds one original with a schedule, and a new copy is added each evening or each week for you to fill in. The guide is written by the program and can not be changed in the copies.
+
+```bss
+t DailyReview|udr
+    Your evening review: what you did, how it went, how you felt and what you are grateful for.
+    s+!     Name|Review|e.g. "Evening review". Each day's copy gets the date added.
+    s!!     Guide|How To Review|Guidance from the program on how to do your review
+    ts      Schedule|Repeats|Usually every evening
+    s       Activities|What I Did|The actions you took today
+    s       Progress|Progress|What moved forward today
+    s       Feelings|How I Felt|Your feelings about the day and your goals
+    s       Noteworthy|Noteworthy Events|Anything else worth remembering
+    l:s     Gratitude|Grateful For|What you are grateful for today. Read it again tomorrow morning.
+    l:s     Ideas|Ideas|Ideas to look into in the future
+    l:tt    Tomorrow|For Tomorrow|Tasks to do tomorrow
+
+t WeeklyReview|uwr
+    Your weekly planning session: look back at the week, measure your progress, and plan the week ahead.
+    s+!     Name|Review|e.g. "Weekly planning". Each week's copy gets the date added.
+    s!!     Guide|How To Review|Guidance from the program on how to do your weekly planning
+    ts      Schedule|Repeats|Usually once a week
+    s       Progress|Progress|How far you got with this week's tasks, measured against last week
+    s       WhatWorked|What Worked|The actions that moved you towards your goals
+    s       WhatDidNot|What Did Not Work|The actions that made little or no difference
+    s       HeldBack|What Held Me Back|Was it time, or fear? If it was fear, add it to your goal as a new risk.
+    l:tt    ToReview|To Review Next Week|Actions whose outcomes can only be measured later
+```

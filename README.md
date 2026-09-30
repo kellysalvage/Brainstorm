@@ -3,6 +3,28 @@
 Brainstorm is a system that allows users to quickly create lists of items in markdown-like text and then transform them into useful, actionable data. The text can be defined using a brainstorm structure which is also markdown-like and defines the types that can be represented in a brainstorm document. A branstorm structure document is a brainstorm document that defines a structure.
 The system provides text to data and data to text where the text and data are associated with the same brainstorm structure. 
 
+## Markdown
+Brainstorm documents and structure documents are Markdown, with the usual meanings, so they can be read and edited in any text editor. Structure documents use the file extension `.bss`, and brainstorm documents use `.bsd`.
+* **Headings are sections.** `#`, `##` and so on group the items below them. In the app's tree view a section is shown like a folder, and sections are kept when a brainstorm is written back out as a document.
+* **Plain text is notes.** A paragraph that is not an item, a heading or an element is kept and shown, but it is not data. This is how to write comments and explanations.
+* **A line is an item only when the word before the colon is a known type or alias.** "Remember to call Bob: it is urgent" is a note. A line such as `Gaol: Book a holiday` looks like an item with a mistyped type, so it is flagged rather than silently treated as a note.
+* **Text values can use inline Markdown**, such as bold, italics and links. The app shows them formatted.
+* **`*` starts a list item only directly under a list element.** Anywhere else it is an ordinary bullet in a note.
+
+### Fences in structure documents
+In a structure document, types, choices and functions are only read from code blocks marked `bss`:
+
+````
+```bss
+t Goal|tg
+    Something you want to achieve.
+    s+! Name|Goal|A short name for the goal
+```
+````
+Everything outside the `bss` blocks is documentation: headings, explanations, pictures and examples, shown as help in the app. This keeps a structure document readable, and it means a note can never be mistaken for a definition. If a definition contains three backticks, for example in a long description, use four backticks for the fence instead.
+
+Brainstorm documents are not fenced, because they are for everyone. In this README, examples of brainstorm documents are marked `bsd` so that tools can tell the two apart.
+
 ## Brainstorm Structure syntax
 All declarations are made starting with a token defining what is being declared. A complex item with child elements has the child elements listed below the description which is a description of the type itself to be used by the system to help users understand what the type is for. Since description is always first, it does not need a token to define it. All elements must be pre-defined types or types that are defined in the same brainstrom document: the key at the moment is to keep it simple since this is not meant to be a turning complete programming language, just a way to easily define DDD models.
 
@@ -27,20 +49,20 @@ t name|alias
     s!! ReadOnlyTextProperty[|Caption][|ReadOnlyTextPropertyDescription]
     i!!|0..100 Score|Score|A templated, read-only score between 0 and 100
 ```
-By convention, built in simple types have a single character alias, built in complex types have a two character alias staring with t. E.G tt for task and user type aliases have a two or more character alias starting with u. E.G. t sale|us
+By convention, built in simple types have a single character alias (except the media types, which have short readable aliases such as img), built in complex types have a two character alias staring with t. E.G tt for task and user type aliases have a two or more character alias starting with u. E.G. t sale|us
 More formally, we have:
 ```
 t TypeName|alias
     [description]
-    s[+][!|!!][|rule]* Name[|caption][|description]
-    [alias|typeName[+][!|!!][|rule]* elementName[|caption][|description]]*
+    s[+][!|!!][=default][|rule]* Name[|caption][|description]
+    [alias|typeName[+][!|!!][=default][|rule]* elementName[|caption][|description]]*
     [alias|typeName=(formula)[|rule]* elementName[|caption][|description]]*
 ```
 You will notice that for most of the elements there are two MyThing properties: this is because each element is created with a name and an alias. Aliases allow you to create shortcut names to make producing a brainstorm structure document eaier.
 
 ### Long descriptions
 A type description is normally a single line. To write a longer description, start it with a line containing only `"""` and end it with another line containing only `"""`. Everything between the two lines is the description and can use full markdown, such as bold text, lists and paragraphs. The indentation of the opening `"""` is removed from every line of the description, so the text is read as if it started at the left margin. For example:
-```
+```bss
 t LifeCheck|ulc
     """
     A regular check of my **health, weight and wealth**.
@@ -54,7 +76,7 @@ t LifeCheck|ulc
 ```
 
 ### Templated and read-only elements
-An element is marked as templated by putting `!` straight after its alias or type name, e.g. `s! Name`. Templated elements are the plan. They are copied whenever the item is copied, either on a scheduled date or when someone starts a program. All other elements are the record, and they start blank in every copy.
+An element is marked as templated by putting `!` straight after its alias or type name, e.g. `s! Name`. Templated elements are the plan. They are copied whenever the item is copied, either on a scheduled date or when someone starts a program. All other elements are the record, and they start blank, or with their default value, in every copy.
 
 Putting `!!` after the alias, e.g. `s!! Instructions`, marks the element as templated and read-only. It is copied like any templated element, but the element itself is locked in the copy:
 * A simple element, such as text or a number, can not be changed. This is useful for text such as the description of a published lesson or plan.
@@ -77,11 +99,11 @@ A missing expected value never stops a document from being imported or saved. It
 
 ### Rules
 Rules describe what a good value looks like. Each rule starts with a pipe and is written straight after the alias and any marks, before the element name. One or more spaces separate the rules from the element name, so element names can be lined up to make a type easier to read. For example, a templated, read-only score between 0 and 100:
-```
+```bss
 i!!|0..100 Score|Score|A test score between 0 and 100
 ```
 An element can have several rules, and all of them apply. For example, a user name of 3 to 20 lower case letters:
-```
+```bss
 s|3..20|/^[a-z]+$/ UserName|User Name|Your login, in lower case letters only
 ```
 Like expected elements, rules mean "should" in documents and "must" when publishing. A value that breaks a rule is flagged, but it never stops a document from being imported or saved. If the value is part of the plan, it does stop the item from being published or scheduled. See When problems are reported.
@@ -104,7 +126,7 @@ What a range limits depends on the type of the element:
 
 #### Patterns
 Text can be checked against a pattern, written as a regular expression between two slashes. The slashes mark where the pattern starts and ends, so a pattern can contain pipes and spaces without being mistaken for the next rule or for the element name. A slash inside the pattern is written as `\/`.
-```
+```bss
 s|/^(home|work|mobile)$/ Label|Label|Where this number reaches me
 ```
 Most people can not read regular expressions, so when a value does not match, the flag shows the description of the element or of its type, never the pattern itself. Write the description as an example of a good value, such as "An email address, such as name@example.com".
@@ -121,7 +143,7 @@ Avoid lookarounds, such as `(?=...)`, and backreferences, such as `\1`. .NET sup
 
 #### Conditions
 A condition compares an element with other elements on the same item. It is written as a formula between brackets, and the value should make the condition true. For example, a project that should not end before it starts:
-```
+```bss
 dd                     StartDate|Starts|When the project starts
 dd|(EndDate >= StartDate) EndDate|Ends|When the project ends, on or after the day it starts
 ```
@@ -133,7 +155,7 @@ If an element used by a condition is blank, the condition is not checked. The bl
 
 ### Calculated values
 A calculated value is worked out from other elements on the same item. It is declared by putting `=` straight after the alias, followed by a formula between brackets. The brackets mean the formula can contain spaces. For example:
-```
+```bss
 c ProjectRiskType
     Financial
     Reputational
@@ -169,6 +191,24 @@ Calculations over lists, such as totals, are not supported yet. They may be adde
 
 A formula that is used in several places can be given a name and reused. See Advanced: functions at the end of this document.
 
+### Default values
+A default value is the value an element starts with. It is declared by putting `=` straight after the alias and any marks, followed by the value without brackets:
+```bss
+GoalStatus=Active      Status|Status|Active, on hold, achieved, or laid to rest
+i=3                    Sessions|Sessions per week|How many sessions you plan each week
+s="Not started"        Stage|Stage|Where this piece of work is up to
+```
+Brackets are the difference: `=(...)` is a calculated value that is always worked out and can never be changed, while `=` without brackets is only a starting value. `i=0` starts at 0 and can be changed; `i=(0)` is always 0.
+
+The rules for default values are:
+* A default is filled in once, when an item is created. After that it is an ordinary value that can be changed or cleared.
+* Copies are items too. A record element in a copy starts with its default instead of blank. This is how every task in a copy starts as ToDo: TaskItem declares `TaskStatus=ToDo Status`.
+* A value with spaces or a pipe is written in double quotes, e.g. `s="Not started"`, because a space ends the part before the element name.
+* A date can default to `today`, or to a relative date such as `+1w`. Both are worked out when the item is created. For a copy, today is the copy date.
+* A default counts as a value, so an expected element with a default is never flagged as missing.
+* An element can have a default or a formula, not both.
+* A default must be one of its choice's values, and must pass the element's rules. If it does not, this is reported as a problem in the structure document.
+
 ## Built-in types
 Built in types are the framework for creaing and defining the structures you want to work with. They can not be modified, but they can be extended (see below). These types provide data essential for some of the built-in services in the system such as user logins, contact details and task management. These types often need no modification to use and often are not to be used in Brainstorm documents. For example, the user that is set for a tasks owner or creator will be the user that imports the document.
 
@@ -181,7 +221,7 @@ c choiceName
 Because many scenarios have a large number of choice-style values, choices do not support aliases and must be explicitly named. 
 
 To define the Months choice for example, we have the following:
-```
+```bss
 c Months
     Jan
     Feb
@@ -197,7 +237,7 @@ c Months
     Dec
 ```
 Using a choice in a type is simple:
-```
+```bss
 t MyType|umt
     An example type that offers a chice of Months
     Months TheMonth|The Month|The month selected for fun
@@ -219,6 +259,37 @@ The following types are built in and the names are reserved:
     A decmal number with a whole and fractional component expressed in decimal places
 * t Boolean|b
     A true or false value: items of this type are either true or false. Missing values are assumed to be false
+* t Image|img
+    A picture, such as a photo on a vision board
+* t Audio|aud
+    A sound recording, such as a guided meditation
+* t Video|vid
+    A video, such as a lesson in a program
+* t File|file
+    Any other file, such as a PDF worksheet
+
+### Media
+Images, audio, video and other files are written the Markdown way. An image uses an exclamation mark, and everything else is written as a link. The text in square brackets is the caption, which is also used as alternative text for people who can not see or hear the media:
+```bss
+t Lesson|ul
+    One lesson in a course.
+    s+!     Name|Lesson|The title of the lesson
+    vid!!   Video|Video|The lesson itself
+    aud!!   Meditation|Guided Meditation|A short practice to finish the lesson
+    file!!  Worksheet|Worksheet|A worksheet to fill in
+    l:img   Pictures|Pictures|Pictures that go with the lesson
+```
+```bsd
+Lesson: Facing your fears
+    Video: [Measuring the monster](lessons/measuring-the-monster.mp4)
+    Meditation: [Calm before action](audio/calm-before-action.mp3)
+    Worksheet: [Fear inventory](worksheets/fear-inventory.pdf)
+    Pictures:
+    * ![The monster, revealed as a small furry ball](images/monster.jpg)
+```
+A plain web address or file path is also accepted.
+
+The file can be one that has been uploaded to Brainstorm, or a link to a file elsewhere. In a published program, media must be uploaded to Brainstorm: links to files elsewhere can break, and paid content must only be shown to the people who bought it. A link to a file elsewhere in a program's plan is flagged when the program is published. See When problems are reported.
 
 ### Built-in complex types
 * t List<T>|l:x
@@ -226,13 +297,13 @@ The following types are built in and the names are reserved:
 * t TaskItem|tt
     A task object that we can use in kanban boards
 **Definition**
-```
+```bss
 t TaskItem|tt
     A TaskItem is anything that needs to have action taken to implement some desired outcome. This can be used in a todo list, a list of things that must be done to get controls in place for a risk, a projects kanban board, etc.    
     s!!+ Name|Task Name|A short name to identify the task without a full description
     s!+ Description|Description|A full description of what the task entails, what needs to be done and any other information pertinent to the execution and completion of the task
     d CreatedDate|Created Date|The date and time the task was created
-    TaskStatus Status|Status|The status of the task
+    TaskStatus=ToDo Status|Status|The status of the task
     i Priority|Priority|When a task appears in a list priority can be used to sort them.  
     d! StartDate|Start Date|When the task will be started
     d! DueDate|Due Date|The date and time the task should be done by
@@ -248,7 +319,7 @@ StartDate and DueDate are templated so that relative dates, such as `+2d`, are c
 * t Contact|tc
     A contact with contact details such as a phone number, email address, etc. 
     **Definition**
-```
+```bss
 t contact|tc
     An contact is a party that has contact details
     s Name|Name|The first name of the contact 
@@ -264,7 +335,7 @@ t contact|tc
 * t User|tu
     Another user of the system which also has contact details.
     **Definition**
-```
+```bss
  t User|tu
     A user of the system
     s Name|Login|The user login name (usually an email address)
@@ -275,7 +346,7 @@ t contact|tc
 * t Goal|tg
     Something you want to achieve, why you want it, and what stands in the way.
     **Definition**
-```
+```bss
 t Goal|tg
     Something you want to achieve, why you want it, and what stands in the way.
     s+!      Name|Goal|A short name for the goal
@@ -291,7 +362,7 @@ t Goal|tg
 * t Milestone|tm
     A measurable point on the way to a goal.
     **Definition**
-```
+```bss
 t Milestone|tm
     A measurable point on the way to a goal.
     s+!      Name|Milestone|What will be true when you reach it
@@ -303,7 +374,7 @@ t Milestone|tm
 * t Risk|tr
     Something that could stop you or hurt you. A risk is rated twice: as it is now, and as it will be once its controls are in place. Controls often overlap, so the remaining risk is rated by judgement rather than worked out from the controls.
     **Definition**
-```
+```bss
 t Risk|tr
     Something that could stop you or hurt you: how likely it is, how bad it would be, and what is left once it is controlled.
     s+!                                                   Name|Risk|e.g. "Losing income if I get sick"
@@ -327,7 +398,7 @@ Every risk has a Severity, including financial ones, so that all risks can be ra
 * t Control|trc
     Something you do to stop a risk happening, or to limit the damage if it does.
     **Definition**
-```
+```bss
 t Control|trc
     Something you do to stop a risk happening, or to limit the damage if it does.
     s+!             Name|Control|e.g. "Take out income protection insurance"
@@ -340,18 +411,18 @@ Effectiveness and Cost are used together to decide whether a control is worth do
 * t Assessment|ta
     A snapshot of where you are now, so that you can compare it later.
     **Definition**
-```
+```bss
 t Assessment|ta
     A snapshot of where you are now, so that you can compare it later.
     s+!             Name|Assessment|e.g. "Health check"
-    dd              Date|Date|When the measurements were taken
+    dd=today        Date|Date|When the measurements were taken
     ts              Schedule|Repeats|How often to take the snapshot
     l:tai+          Items|Measurements|What you measure
 ```
 * t AssessedItem|tai
     One thing you measure in an assessment.
     **Definition**
-```
+```bss
 t AssessedItem|tai
     One thing you measure in an assessment.
     s+!!            Name|Measure|e.g. Weight. Locked in copies so that results stay comparable.
@@ -363,7 +434,7 @@ t AssessedItem|tai
 * t Schedule|ts
     A schedule says when a new copy of an item should be created. See Schedules for how to write one.
     **Definition**
-```
+```bss
 t Schedule|ts
     A schedule says when a new copy of an item should be created.
     s Name|Name|A short name for the schedule, e.g. "Monthly check-in"
@@ -381,7 +452,7 @@ t Schedule|ts
 ### Built-in choices
 ContactDetailType - used in contact detail to select a type. 
 **definition**
-```
+```bss
 c ContactDetailType
     Email
     PhoneNumber
@@ -392,7 +463,7 @@ c ContactDetailType
     Other
 ```
 Frequency is the choice for setting up schedules
-```
+```bss
 c Frequency
     Daily
     Weekly
@@ -401,7 +472,7 @@ c Frequency
     Yearly
 ```
 TaskStatus is the set of statuses that a task can be in: used for the kanban board and tracking projects
-```
+```bss
 c TaskStatus
     ToDo
     InProgress
@@ -412,7 +483,7 @@ c TaskStatus
     Dropped
 ```
 RiskType is the main kind of harm a risk would cause
-```
+```bss
 c RiskType
     Social
     Financial
@@ -422,7 +493,7 @@ c RiskType
     Reputational
 ```
 ControlType says how a control deals with a risk
-```
+```bss
 c ControlType
     Prevent
     ReduceImpact
@@ -430,7 +501,7 @@ c ControlType
 
 ### Extending types
 It can often be the case that you want some new peice of data on an existing type. For example, in the Task you may want to add a new element to allow you to delegate that task to a contact. In this case it is better, in fact essential, to extend the task rather than copy and paste it's definition, so that the system can still recognise the item as a task. Here is how you would implement such a change:
-```
+```bss
 x DelegatedTask:TaskITem|udt
     A task that can be delegated to a contact: useful for team management and sharing tasks.
     tc DelegatedTo|Delegate|The person that is responsible for the task completion.
@@ -440,12 +511,12 @@ The declaration of this is similar to the declaration of a normal type, but star
 An extended type can be used anywhere the type it extends can be used. For example, a list of tasks can hold delegated tasks. See Shorthand for how a list item's type is chosen.
 
 Simple types can be extended too. This is how a rule is given a name, so that people can use it without having to read or write it. The rules are written after the alias, each starting with a pipe. For example, an email address is text that matches a pattern:
-```
+```bss
 x EmailAddress:s|em|/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
     An email address, such as name@example.com
 ```
 Anyone can now use `em` like any other type, without knowing the pattern:
-```
+```bss
 em+ Email|Email Address|Where to send reminders
 ```
 An extended simple type only adds rules and a description. It has no elements. If an element that uses it adds rules of its own, both sets of rules apply.
@@ -458,7 +529,7 @@ For a name to be valid, these simple rules must be followed:
 ## Brainstorm documents
 A brainstorm document is a text document, similar to markdown, that allows us to quickly list items in meaningful ways, without having to do data capture on some form or spreadsheet. This saves us from having to navigate between controls on pages, click save a hundred times and wait for excel to think when we want to add an item.
 Some use cases are quickly creating action plans, identifying risks and controls, setting goals and planning how to achieve them. For example, using the built-in Goal type (see Built-in complex types), I can create a goal with a list of tasks easily as follows:
-```
+```bsd
 Goal: Book a holiday
     Actions:
     * Find a sunny destination wich fits into my budget
@@ -491,7 +562,7 @@ The rules are:
 Because an extended type adds its elements after those of the type it extends, shorthand written for the original type still works for the extended one.
 
 Using the Goal type, the values on the line are Name, Description, TargetDate and Priority, in that order. Here the Priority is written below the line instead, and the reasons are a list:
-```
+```bsd
 Goal: Book a holiday|Sun, sea and no laptop|2027-03-01
     Priority: 2
     Reasons:
@@ -506,7 +577,7 @@ Goal: Book a holiday|Sun, sea and no laptop|2027-03-01
 A date can be written relative to a start date, using `+` followed by a number and a unit: `d` for days, `w` for weeks, `m` for months and `y` for years. Words are also accepted, so `+2w` and `+2 weeks` mean the same thing.
 
 Relative dates are how a plan says "when" without knowing when it will be followed. They stay relative in the document they are written in, and the app shows them as, for example, "2 weeks after start". They are given a real date when a copy is made. See Repeating items.
-```
+```bsd
 Goal: Run a 5k|Go from the sofa to running 5k without stopping|+12w
     Milestones:
     * Run 1k without stopping|+3w
@@ -521,14 +592,14 @@ Import never fails. A value the system can not understand, such as `Weight: abou
 
 Publishing and scheduling are stricter, because other people and future copies depend on the plan being complete. A program can not be published while its plan has problems, and a schedule does not create a copy while the original's plan has problems. The author is told what needs fixing.
 
-The plan is everything that gets copied: templated elements, lists, and the templated elements of each item in those lists. Record elements, such as Weight in a LifeCheck, are not checked, because they start blank in every copy anyway.
+The plan is everything that gets copied: templated elements, lists, and the templated elements of each item in those lists. Record elements, such as Weight in a LifeCheck, are not checked, because they start blank, or with their default value, in every copy anyway.
 
 # The Brainstorm application
 The application supports editing brainstorm structure documents and uses these documents to generate a UI based on the defined types in the brainstorm structure. A user has a number of brainstorms available which can be viewed as a document/text, or as structured objects (in structured mode) where the UI is based on the structure document that the brainstorm document uses. The structure document is not used to generate code, but instead to create an in-memory object model that is tolerant of user errors. 
 When a user is viewing their brainstorm in structured mode the layout is driven by the model defined in the brainstorm structure document.
 Out of the box, all strucuters inherit tasks, goals, risks, controls, contacts, contact details, schedule, assesment and assessed items which are pre-defined. Goals, risks, controls and assessments are included in the structure document when a new brainstorm structure document is created, allowing users to remove these items. Tasks, contacts, contact details and users are not deletable. This is because tasks are the most meaningful thing in a brainstorm and are a first class structure. Tasks must be supported by a kanbas board in the UI.
 The system allows users to keep a catalog of Brainstorm structure documents (on disk or in a database) and a catalog of brainstorms. Some brainstorms, like assessment-style brainstorms must support repeating so that the assessed items can be measured and compared against historic values. For example, give an assessment style structure as follows:
-```
+```bss
 t LifeCheck|ulc
     A regular check of my health, weight and wealth
     s+! Name|Name|What this check is called
@@ -556,12 +627,12 @@ The item that is copied is the original. There are two kinds of copy:
 * A **start** is someone's own copy of a whole program, created when they start following it.
 
 Both kinds of copy follow the same rules:
-* Only templated elements, marked with `!` or `!!`, are copied. All other elements start blank, so they can be filled in on the day and compared with earlier copies.
+* Only templated elements, marked with `!` or `!!`, are copied. All other elements start blank, or with their default value, so they can be filled in on the day and compared with earlier copies.
 * Elements marked with `!!` are locked in the copy: simple values can not be changed, lists can not have items added or removed, and complex elements can not be deleted.
 * Lists are always copied, whether or not they are marked. Each item in a list is created using the `!` and `!!` marks of its own type. A list of simple values, such as `l:s`, is copied as it is.
 * A templated complex element is copied the same way: its own elements follow the `!` and `!!` marks of its type.
 * If Name is templated, an occurrence gets the date added to it, e.g. "Life check 2026-10-01".
-* Every task in the copy, at any depth, has the Status ToDo.
+* Record elements start with their default value, or blank if they have none. Because TaskItem's Status defaults to ToDo, every task in the copy, at any depth, starts as ToDo.
 
 Dates in the copy are worked out from the copy date. For an occurrence created by a schedule, this is the scheduled date. For an occurrence created by hand, it is the date the user picks. For a start, it is the day the follower starts the program.
 * A relative date becomes the copy date plus its offset. A task due `+2d` in a copy made on 2026-10-01 is due on 2026-10-03.
@@ -579,7 +650,7 @@ A user can also create an occurrence by hand, for example to make up for a skipp
 To follow your own program, you start it like anyone else.
 
 For example, using the LifeCheck type above, this is the original a user writes:
-```
+```bsd
 LifeCheck: Life check
     TargetWeight: 78
     Schedule: Monthly check|Monthly||2026-10-01
@@ -590,7 +661,7 @@ LifeCheck: Life check
     * Update the net worth spreadsheet
 ```
 And this is the copy the system creates on 2026-10-01. Weight is blank, and each step is a new task with the Status ToDo and a DueDate of 2026-10-01:
-```
+```bsd
 LifeCheck: Life check 2026-10-01
     TargetWeight: 78
     Steps:
@@ -599,13 +670,13 @@ LifeCheck: Life check 2026-10-01
     * Update the net worth spreadsheet
 ```
 Any task repeats once it has a schedule. This one is created every other Wednesday:
-```
+```bsd
 TaskItem: Visit mom|Pop round for tea and help with the garden
     Schedule: Every other Wednesday|Weekly|2|2026-09-30
         DueTime: 9:00 am
 ```
 A repeating task can also sit inside a goal, so that a regular action stays with the goal it serves. Each session is added to the goal's actions, and appears on the goal's kanban board and in the user's tasks:
-```
+```bsd
 Goal: Get fit by summer|Strong, lean and able to run 10k|2027-06-01
     Actions:
     * Gym session|Strength and cardio, 45 minutes
@@ -615,7 +686,7 @@ Goal: Get fit by summer|Strong, lean and able to run 10k|2027-06-01
 
 ### Schedules
 A schedule is written as a Schedule element under the item that repeats. The line after `Schedule:` is shorthand for its Name, Repeats, Every and StartDate, and the other elements go on the lines below it:
-```
+```bsd
 * Gym session|Strength and cardio, 45 minutes
     Schedule: Gym|Weekly||2026-10-05
         On: Mon, Wed, Fri
@@ -653,7 +724,7 @@ DueTime is always the user's own local time. A program that says 7:00 am means 7
 Schedules are worked out using the recurrence rules of iCalendar, the standard used by Google Calendar, Outlook and Apple Calendar. This means the app can also publish your tasks and habits as a calendar feed, so that they appear in the calendar you already use.
 
 Anything the elements above can not express can be written as an iCalendar rule in the Rule element. A Rule is used instead of Repeats, Every, On, Times and EndDate. StartDate and DueTime still apply. For example, the last working day of every month:
-```
+```bsd
     Schedule: Month end report|||2026-10-01
         Rule: FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1
 ```
@@ -683,7 +754,7 @@ f resultAlias FunctionName([alias parameterName[, alias parameterName]*])
     = formula
 ```
 For example, a calculation and a predicate:
-```
+```bss
 f n PercentOf(n Percent, n Amount)
     A percentage of an amount, e.g. 50% of 10,000 is 5,000
     = Percent / 100 * Amount
@@ -693,7 +764,7 @@ f b OnOrAfter(dd Later, dd Earlier)
     = Later >= Earlier
 ```
 A function is used by writing its name followed by the values to give it, in brackets:
-```
+```bss
 n=(PercentOf(Likelihood, Impact))   RiskScore|Risk Score|The cost of the risk once its likelihood is taken into account
 dd|(OnOrAfter(EndDate, StartDate))  EndDate|Ends|When the project ends which must be on or after the day it starts
 ```
