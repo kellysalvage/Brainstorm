@@ -167,6 +167,8 @@ The rules for calculated values are:
 
 Calculations over lists, such as totals, are not supported yet. They may be added later using something like C# LINQ expressions.
 
+A formula that is used in several places can be given a name and reused. See Advanced: functions at the end of this document.
+
 ## Built-in types
 Built in types are the framework for creaing and defining the structures you want to work with. They can not be modified, but they can be extended (see below). These types provide data essential for some of the built-in services in the system such as user logins, contact details and task management. These types often need no modification to use and often are not to be used in Brainstorm documents. For example, the user that is set for a tasks owner or creator will be the user that imports the document.
 
@@ -465,3 +467,50 @@ ScheduledTask: Visit mom|Pop round for tea and help with the garden
     Schedule: Every other Wednesday|Weekly|2|2026-09-30
         DueTime: 9:00 am
 ```
+# Advanced: functions
+This section is for authors of structure documents who find themselves writing the same formula more than once. Nobody needs functions to write a brainstorm document, and most structures will never need them.
+
+A function is a formula with a name. It lets a formula be written once and used in any calculated value or condition. A function that returns true or false is sometimes called a predicate, and it is used in conditions. There is only one kind of declaration, and the result type tells you which kind of function it is.
+
+### Declaring a function
+A function is declared with a line starting with f, followed by the alias of the type it returns, the name of the function and its parameters in brackets. The next line is a description, and the last line is the formula, starting with `=`:
+```
+f resultAlias FunctionName([alias parameterName[, alias parameterName]*])
+    description
+    = formula
+```
+For example, a calculation and a predicate:
+```
+f n PercentOf(n Percent, n Amount)
+    A percentage of an amount, e.g. 50% of 10,000 is 5,000
+    = Percent / 100 * Amount
+
+f b OnOrAfter(dd Later, dd Earlier)
+    True when the later date is the same as or after the earlier one
+    = Later >= Earlier
+```
+A function is used by writing its name followed by the values to give it, in brackets:
+```
+n=(PercentOf(Likelihood, Impact))   RiskScore|Risk Score|The cost of the risk once its likelihood is taken into account
+dd|(OnOrAfter(EndDate, StartDate))  EndDate|Ends|When the project ends which must be on or after the day it starts
+```
+The description is required. A function without one can not be understood by the next person who reads it, and it is shown as help wherever the function is used. A description can span several lines using `"""`, just like a type description.
+
+### The rules for functions
+* A function is a single formula. It has no statements, variables or loops. The formula can use everything a calculated value or condition can.
+* A function can only use its own parameters. It can not see the elements of the item it is used on, so everything it needs must be passed in.
+* A function can call other functions, but it can not depend on itself, directly or through other functions. This is reported as a problem in the structure document. It means every formula always finishes.
+* Functions are not values. A function can not be passed to another function or stored in an element.
+* Parameters use the aliases of the built-in simple types, such as `n`, `i`, `dd` and `b`. Giving a function a value of the wrong type is reported as a problem in the structure document.
+* If a value given to a function is blank or can not be understood, the result is blank. A condition with a blank result is not checked.
+* Functions are declared in a structure document, in the same way as types. Function names follow the same name rules as types.
+
+### When to use a function
+Use a function when a formula is long, is used in more than one place, or has a name that people in the field already recognise, such as a body mass index or a tax rate.
+
+Do not wrap a short comparison in a function. `(EndDate >= StartDate)` is easier to read than `(OnOrAfter(EndDate, StartDate))`, so the plain comparison is the better choice unless the function is used in many places.
+
+A calculation that belongs to one type can already be shared by extending that type, and a rule on a single value can be given a name by extending a simple type. See Extending types. Functions are for the formulas that are left: those used on different elements in different types.
+
+### Not decided yet
+Functions provided by the system, and functions written in the programming language the system is built with, have not been decided. This depends on the platform, which has not been chosen yet.
