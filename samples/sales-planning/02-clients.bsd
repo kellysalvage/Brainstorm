@@ -1,0 +1,9 @@
+# Sales Q4 2026
+
+Each client is one line: the client's name, then a link to the main contact.
+
+SalesPlan: Sales Q4 2026|2026-10-01|2026-12-31|50000
+    Clients:
+    * Brightside Dental|[[Priya Shah]]
+    * Northgate Builders|[[Tom Okafor]]
+    * Fern and Co|[[Ellie Fern]]

@@ -1,0 +1,28 @@
+# Sales Q4 2026
+
+The website redesign has two follow-ups: a one-off task to send the revised proposal, and a check-in call that repeats every other Friday until the deal is decided. Each check-in is added to the deal's follow-ups and appears in "My tasks" on the day.
+
+SalesPlan: Sales Q4 2026|2026-10-01|2026-12-31|50000
+    Clients:
+    * Brightside Dental|[[Priya Shah]]
+        Deals:
+        * Monthly support|6000|Won|2026-10-10|100
+        * Website redesign|12000|Proposal|2026-11-15|60
+            FollowUps:
+            * Send the revised proposal
+                DueDate: 2026-10-09
+            * Check in with Priya
+                Schedule: Fortnightly check-in|Weekly|2|2026-10-09
+                    On: Fri
+                    EndDate: 2026-11-15
+                    DueTime: 10:00 am
+    * Northgate Builders|[[Tom Okafor]]
+        Deals:
+        * Booking system|25000|Qualified|2026-12-10|30
+            FollowUps:
+            * Book a demo of the booking system
+                DueDate: 2026-10-14
+    * Fern and Co|[[Ellie Fern]]
+        Deals:
+        * Online shop|18000||2026-12-20|10
+        * Logo refresh|3000|Lost|2026-10-20|0

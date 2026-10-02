@@ -1,0 +1,18 @@
+# Jordan's job search
+
+Looking for work is a job in itself, so I have given it a routine: one strong application every weekday morning, reaching out to someone on Tuesdays and Thursdays, and a review of the numbers every Friday afternoon. Each of these appears in my tasks on the right day.
+
+JobSearch: Project manager in renewable energy|Project Manager|65000|2026-10-05|2027-01-31|15000|3200
+    Routine:
+    * Send one strong application|Search the job boards and send one application that really fits
+        Schedule: Applications|Weekly||2026-10-05
+            On: weekdays
+            DueTime: 9:00 am
+    * Reach out to someone|One message or call to someone in my network or an agent
+        Schedule: Networking|Weekly||2026-10-06
+            On: Tue, Thu
+            DueTime: 2:00 pm
+    * Review the week|Look at the numbers: applications sent, responses and interviews. If the responses are low, change the CV.
+        Schedule: Friday review|Weekly||2026-10-09
+            On: Fri
+            DueTime: 4:00 pm

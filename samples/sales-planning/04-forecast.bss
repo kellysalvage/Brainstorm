@@ -1,0 +1,38 @@
+# Sales planning, step 4: a forecast for each deal
+
+Not every deal will be won. Each deal now has a probability, and a calculated weighted value: what the deal is worth once its probability is taken into account. The weighted value is worked out by the system, so it is never written in the document.
+
+The new elements are added at the end of Deal, so the deals written in step 3 still work as they are.
+
+```bss
+c DealStage
+    Lead
+    Qualified
+    Proposal
+    Negotiation
+    Won
+    Lost
+
+t SalesPlan|usl
+    A sales plan for a period: what you aim to sell, and who you will sell it to.
+    s+                          Name|Plan|e.g. "Sales Q4 2026"
+    dd                          StartDate|Starts|The first day of the period
+    dd|(EndDate >= StartDate)   EndDate|Ends|The last day of the period
+    n+|0..                      Target|Target|How much you aim to sell in the period
+    l:ucl                       Clients|Clients|The people and companies you are selling to
+
+t Client|ucl
+    A person or company you are selling to.
+    s+        Name|Client|The client's name
+    r:tc      MainContact|Main Contact|The person you deal with
+    l:udl     Deals|Deals|What you hope to sell them
+
+t Deal|udl
+    Something you hope to sell to a client.
+    s+                               Name|Deal|e.g. "Website redesign"
+    n+|0..                           Value|Value|What the deal is worth
+    DealStage=Lead                   Stage|Stage|How far the deal has got
+    dd                               ExpectedClose|Expected Close|When you expect the client to decide
+    i|0..100                         Probability|Probability (%)|How likely the deal is to be won
+    n=(Value * Probability / 100)    WeightedValue|Weighted Value|What the deal is worth once its probability is taken into account
+```

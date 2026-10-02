@@ -1,0 +1,55 @@
+# Sales planning, step 6: activities
+
+Every call, email and meeting with a client is worth recording, so that anyone picking up the client can see what has happened. An activity's date defaults to `now` and the person defaults to `me`, so recording a call as it happens takes one line.
+
+```bss
+c DealStage
+    Lead
+    Qualified
+    Proposal
+    Negotiation
+    Won
+    Lost
+
+c ActivityType
+    Call
+    Email
+    Meeting
+
+t SalesPlan|usl
+    A sales plan for a period: what you aim to sell, and who you will sell it to.
+    s+                          Name|Plan|e.g. "Sales Q4 2026"
+    dd                          StartDate|Starts|The first day of the period
+    dd|(EndDate >= StartDate)   EndDate|Ends|The last day of the period
+    n+|0..                      Target|Target|How much you aim to sell in the period
+    l:ucl                       Clients|Clients|The people and companies you are selling to
+
+t Client|ucl
+    A person or company you are selling to.
+    s+        Name|Client|The client's name
+    r:tc      MainContact|Main Contact|The person you deal with
+    l:udl     Deals|Deals|What you hope to sell them
+    l:uac     Activities|Activities|Every call, email and meeting
+
+t Deal|udl
+    Something you hope to sell to a client.
+    s+                               Name|Deal|e.g. "Website redesign"
+    n+|0..                           Value|Value|What the deal is worth
+    DealStage=Lead                   Stage|Stage|How far the deal has got
+    dd                               ExpectedClose|Expected Close|When you expect the client to decide
+    i|0..100                         Probability|Probability (%)|How likely the deal is to be won
+    n=(Value * Probability / 100)    WeightedValue|Weighted Value|What the deal is worth once its probability is taken into account
+    l:ufu                            FollowUps|Follow-ups|The next steps
+
+x FollowUp:TaskItem|ufu
+    A next step with a client, such as sending a proposal or a regular check-in call.
+    s       Outcome|Outcome|What happened
+
+t Activity|uac
+    A call, email or meeting with a client.
+    s+                  Name|Activity|What it was about
+    ActivityType=Call   Kind|Kind|Call, email or meeting
+    d=now               Date|Date|When it happened
+    r:tu=me             By|By|Who made the call, sent the email or went to the meeting
+    s                   Outcome|Outcome|What came out of it
+```

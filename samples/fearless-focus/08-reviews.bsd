@@ -1,0 +1,249 @@
+# Kelly's Fearless Focus plan
+
+This is my plan at the end of the first day, 2026-10-05, written out by the app. My schedules have added today's copy of each routine and habit, and I have marked them done. Chapters 10 and 11 set up the evening review and the weekly planning session: today was the first of both, and they are filled in at the bottom.
+
+FocusPlan: Kelly's Fearless Focus plan
+    WhoIWantToBe: A healthy, focused builder of software that helps people, with time and energy for my family
+    Affirmation: I am grateful for my health and my body, and I always have all that I need
+        Sources:
+        * I am grateful for my health and for the body I have
+        * I always have all that I need
+    Vision: My vision
+        Pictures:
+        * ![A healthy body, full of energy](vision/healthy.jpg)
+        * ![Brainstorm on a phone, showing today's tasks](vision/brainstorm-on-a-phone.jpg)
+        * ![Fearless Focus with its new cover](vision/new-cover.jpg)
+    Assessments:
+    * Where I am
+        Schedule: Monthly check|Monthly||2026-11-04
+        Items:
+        * Weight|Health|kg|Weigh yourself first thing in the morning, before breakfast|84
+        * Waist|Health|cm|Measure around your belly button, breathing out
+        * Distance in 30 minutes|Health|km|Walk or jog for 30 minutes and measure how far you get with a phone app
+        * HbA1c|Health|mmol/mol|From my latest blood test
+        * Alcohol-free nights|Health|nights a week|Count the nights in the last week with no alcohol at all
+        * Relationship with my partner|Relationships|1-10|1 is abysmal and 10 is perfect
+        * Relationship with my children|Relationships|1-10|1 is abysmal and 10 is perfect
+        * Relationship with my parents|Relationships|1-10|1 is abysmal and 10 is perfect
+        * Relationships with my closest friends|Relationships|1-10|1 is abysmal and 10 is perfect
+        * Monthly income|Money|per month|Everything that comes in: your job, rent, royalties, dividends and interest
+        * Monthly expenses|Money|per month|Every regular payment: mortgage, loans, bills, food, fuel and insurance
+        * Net assets|Money|total|Everything you own, minus everything you owe
+        * Happiness|Mind|1-10|1 is absolutely miserable and 10 is perfectly happy and content
+        * Coping with negative emotions|Mind|1-10|1 is terrible and 10 is excellent
+        * Hours building Brainstorm|Work|hours a week|Count the hours spent on development and AI engineering
+    Goals:
+    * Reverse fatty liver disease|A healthy liver, and my type 2 diabetes under control|2027-04-04|1
+        Reasons:
+        * My health is the bedrock for everything else I want to do
+        * I have already lost 22 kg, and I want to finish the job
+        * I want the energy to build Brainstorm and to enjoy my family
+        Feeling: Proud of how far I have come, and full of energy
+        Milestones:
+        * Weigh 80 kg|2026-12-31|Weight (kg)|80
+        * A liver scan shows less fat in my liver|2027-04-04
+        Actions:
+        * Book a blood test and a liver scan
+            ExpectedOutcome: A starting point for my liver and my HbA1c, to measure progress against
+            Measure: The results from my doctor
+            OutcomeBy: 2026-10-30
+        * Eat only within my eating window|Intermittent fasting, every day
+            Schedule: Fasting|Daily||2026-10-05
+        * No alcohol tonight|No alcohol from Sunday to Thursday night, except on special occasions such as birthdays
+            Schedule: Alcohol-free nights|Weekly||2026-10-05
+                On: Sun, Mon, Tue, Wed, Thu
+                DueTime: 6:00 pm
+        * Eat only within my eating window 2026-10-05|Intermittent fasting, every day
+            DueDate: 2026-10-05
+            Status: Done
+        * No alcohol tonight 2026-10-05|No alcohol from Sunday to Thursday night, except on special occasions such as birthdays
+            DueDate: 2026-10-05T18:00
+            Status: Done
+        Risks:
+        * Special occasions become an excuse to drink
+            Source: Obstacle
+            RiskType: Health
+            Likelihood: 6
+            Severity: 5
+            WhyItMatters: A few extra nights could soon turn back into the old habit
+            Controls:
+            * Decide the special occasions for the year in advance|Prevent|60|0
+                Tasks:
+                * Write down the birthdays and celebrations for the coming year
+                    DueDate: 2026-10-11
+                    Estimate: 0.5
+            ResidualLikelihood: 3
+            ResidualSeverity: 5
+        * Fasting affects my blood sugar in ways I do not expect
+            Source: Fear
+            Cause: I have type 2 diabetes
+            RiskType: Health
+            Likelihood: 3
+            Severity: 8
+            WhyItMatters: Low blood sugar can be dangerous
+            Controls:
+            * Talk to my doctor before changing how I eat|Prevent|80|0
+                Tasks:
+                * Book an appointment with my doctor
+                    DueDate: 2026-10-09
+                    Status: Done
+            ResidualLikelihood: 1
+            ResidualSeverity: 8
+        * Hunger and low energy make me give up on fasting
+            Source: Fear
+            RiskType: Emotional
+            Likelihood: 5
+            Severity: 3
+            ExpectedSuffering: 1
+            AcceptableSuffering: 3
+            Accepted: true
+    * Build Brainstorm|Software that turns a quick list of thoughts into a plan people can follow|2027-03-31|2
+        Reasons:
+        * I want to build awesome software that helps people get things done
+        * I want a product of my own that earns money while I sleep
+        * Software development and AI engineering is what I enjoy most
+        Feeling: The thrill of seeing people use something I built
+        Milestones:
+        * The language is written down|2026-10-02
+            Comments:
+            * Reached: the language specification is in the README
+        * The parser can import the sample documents|2026-12-31
+        * The web app shows the tree and the kanban board|2027-02-28
+        * The first readers follow Fearless Focus in Brainstorm|2027-03-31
+        Actions:
+        * Write the language specification
+            Status: Done
+        * Choose the platform and programming language
+            ExpectedOutcome: A decision, written down with the reasons for it
+            Measure: The decision is in the repository
+            OutcomeBy: 2026-10-31
+        * Build on the train|Software development and AI engineering on my commute
+            Schedule: Train sessions|Weekly||2026-10-05
+                On: weekdays
+        * Build on the train 2026-10-05|Software development and AI engineering on my commute
+            DueDate: 2026-10-05
+            Status: Done
+        Risks:
+        * I spend my time building Brainstorm and it does not work out
+            Source: Fear
+            RiskType: Emotional
+            Likelihood: 5
+            Severity: 6
+            WhyItMatters: At first I wrote "I do not have the time", but that is a belief, not a fact. The real fear is putting my time into something that nobody uses.
+            Controls:
+            * Share early versions and find out whether people use them|Prevent|50|0
+                Tasks:
+                * Share the language specification and ask for feedback
+                    DueDate: 2026-10-31
+            ResidualLikelihood: 3
+            ResidualSeverity: 4
+        * People tell me there are already plenty of planning apps
+            Source: OthersDoubt
+            RiskType: Emotional
+            Likelihood: 8
+            Severity: 3
+            WhyItMatters: It is discouraging to hear, but none of them turn plain text into programs that people can follow
+            Accepted: true
+    * Relaunch Fearless Focus with Brainstorm|A new cover, and a free Brainstorm program for every reader|2027-06-30|3
+        Reasons:
+        * The book did not get much traction the first time
+        * A program makes the book useful every day, not just while reading it
+        * Every reader is someone who could use Brainstorm
+        Feeling: Satisfied that the book finally reaches the people it was written for
+        Milestones:
+        * The sample videos are on YouTube|2027-01-31
+        * The book is relaunched|2027-06-30
+        Actions:
+        * Record the project planning videos
+            DueDate: 2027-01-31
+        * Design a new cover
+            DueDate: 2027-04-30
+        * Add a link to the Brainstorm program in the book
+            DueDate: 2027-05-31
+        Risks:
+        * The relaunch gets no more traction than the first launch
+            Source: Fear
+            RiskType: Emotional
+            Likelihood: 5
+            Severity: 7
+            WhyItMatters: I put a lot into the book, and it did not reach many people the first time
+            Controls:
+            * Build an audience before the relaunch|Prevent|50|0
+                Tasks:
+                * Publish the sample videos on YouTube
+                    DueDate: 2027-01-31
+                * Give every reader the Brainstorm program for free
+                    DueDate: 2027-05-31
+            ResidualLikelihood: 3
+            ResidualSeverity: 5
+        * Marketing the relaunch costs more than it earns
+            Source: Obstacle
+            RiskType: Financial
+            Likelihood: 4
+            Severity: 4
+            FinancialImpact: 2000
+            Controls:
+            * Set a marketing budget and stick to it|ReduceImpact|70|0
+                Tasks:
+                * Decide the marketing budget for the relaunch
+                    DueDate: 2027-03-31
+            ResidualLikelihood: 4
+            ResidualSeverity: 2
+            ResidualFinancialImpact: 500
+    * Play in a band|Bass guitar and singing
+        Status: LaidToRest
+        Comments:
+        * Laid to rest: I choose to spend my time on my health and on Brainstorm instead
+    * Black belt in karate|Training in karate
+        Status: Achieved
+        Comments:
+        * Achieved: I reached 3rd dan
+    * Keep training in karate|Training in karate after my black belt
+        Status: LaidToRest
+        Comments:
+        * Laid to rest after two hip replacements
+    * Write another book|A second book after Fearless Focus
+        Status: OnHold
+        Comments:
+        * On hold: writing may come back once Brainstorm is launched
+    Routine:
+    * Morning session|Picture your goals achieved and feel the gratitude as if you already have them, then choose today's tasks from your weekly plan
+        Schedule: Every morning|Daily||2026-10-05
+            DueTime: 7:00 am
+    * Affirmation practice|Take a deep breath and slowly say your affirmation, in your mind or out loud
+        Schedule: Every day|Daily||2026-10-05
+            DueTime: 7:15 am
+    * Morning session 2026-10-05|Picture your goals achieved and feel the gratitude as if you already have them, then choose today's tasks from your weekly plan
+        DueDate: 2026-10-05T07:00
+        Status: Done
+    * Affirmation practice 2026-10-05|Take a deep breath and slowly say your affirmation, in your mind or out loud
+        DueDate: 2026-10-05T07:15
+        Status: Done
+    DailyReviews:
+    * Evening review
+        Guide: Take some time in the evening to review your day. Write down what you did, the progress you made, how you felt and anything worth remembering. Note what you are grateful for, so that you can read it again tomorrow morning, and the tasks and ideas for tomorrow.
+        Schedule: Every evening|Daily||2026-10-05
+            DueTime: 9:00 pm
+    * Evening review 2026-10-05
+        Guide: Take some time in the evening to review your day. Write down what you did, the progress you made, how you felt and anything worth remembering. Note what you are grateful for, so that you can read it again tomorrow morning, and the tasks and ideas for tomorrow.
+        Activities: Fasted until lunchtime, worked on the design of the parser on the train, and booked an appointment with my doctor
+        Progress: The doctor's appointment is booked, and the first part of the parser is clearer
+        Feelings: Hungry in the late morning, but clear-headed in the afternoon
+        Gratitude:
+        * My health, and how far I have come
+        * Time on the train to build something I love
+        Ideas:
+        * A Brainstorm program for intermittent fasting
+        Tomorrow:
+        * Sketch the main parts of the parser on the train
+    WeeklyReviews:
+    * Weekly planning
+        Guide: Look at how far you got with this week's tasks, and measure your progress against last week. Do more of the actions that work and drop the ones that do not. If you took no action at all, ask whether it was time or fear that held you back. Then plan only what you can really do in the coming week.
+        Schedule: Every week|Weekly||2026-10-05
+            DueTime: 6:00 pm
+    * Weekly planning 2026-10-05
+        Guide: Look at how far you got with this week's tasks, and measure your progress against last week. Do more of the actions that work and drop the ones that do not. If you took no action at all, ask whether it was time or fear that held you back. Then plan only what you can really do in the coming week.
+        Progress: This is the first week, so the assessment from 2026-10-04 is my starting point
+        ToReview:
+        * Check whether fasting is affecting my energy in the mornings
+            DueDate: 2026-10-12

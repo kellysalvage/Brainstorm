@@ -1,0 +1,39 @@
+# Jordan's job search
+
+By the end of my first week I had four companies on my list, and had applied to three of them. Each company holds my applications to it, so the list of companies is the list of everywhere I have applied. Each application keeps the CV and cover letter I sent: I have two versions of my CV, one for project manager roles and one for PMO roles.
+
+GreenGrid Networks has no stage yet, so it starts as Interested.
+
+JobSearch: Project manager in renewable energy|Project Manager|65000|2026-10-05|2027-01-31|15000|3200
+    Companies:
+    * Solaris Energy|Solar farms and battery storage|https://example.com/solaris/careers
+        Applications:
+        * Project Manager, Grid Connections|Applied|2026-10-08|64000|5
+            CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
+            CoverLetter: [Cover letter for Solaris Energy](letters/solaris-energy.pdf)
+    * Northwind Power|Offshore wind|https://example.com/northwind/careers
+        Applications:
+        * Senior Project Manager|Applied|2026-10-06|70000|3
+            CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
+    * Brightfield Solar|Rooftop solar for businesses|https://example.com/brightfield/careers
+        Applications:
+        * Delivery Manager|Applied|2026-10-09|58000|3
+            CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
+    * GreenGrid Networks|Electricity networks|https://example.com/greengrid/careers
+        Applications:
+        * PMO Manager|||66000|4
+            Comments:
+            * The advert closes on 2026-10-30. Ask around before applying.
+    Routine:
+    * Send one strong application|Search the job boards and send one application that really fits
+        Schedule: Applications|Weekly||2026-10-05
+            On: weekdays
+            DueTime: 9:00 am
+    * Reach out to someone|One message or call to someone in my network or an agent
+        Schedule: Networking|Weekly||2026-10-06
+            On: Tue, Thu
+            DueTime: 2:00 pm
+    * Review the week|Look at the numbers: applications sent, responses and interviews. If the responses are low, change the CV.
+        Schedule: Friday review|Weekly||2026-10-09
+            On: Fri
+            DueTime: 4:00 pm

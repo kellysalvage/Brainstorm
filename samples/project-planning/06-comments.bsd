@@ -1,0 +1,43 @@
+# Website relaunch
+
+Comments are added under any item. Most are a single line: the date and the author are filled in automatically. A comment can also give its date after the text, separated by a pipe.
+
+Project: Website relaunch|A faster, simpler website that works well on phones|2026-10-05|2026-12-18
+    Comments:
+    * Kick-off meeting went well. Everyone is happy with the dates.|2026-10-05T10:00
+    Tickets:
+    * Agree the new site map
+        Status: Done
+    SubProjects:
+    * Design|The look and feel of the new site
+        Tickets:
+        * Design the login screen
+            Comments:
+            * Keep it simple: email and password only for now
+    * Build|Everything needed to run the new site
+        Tickets:
+        * Choose a hosting provider
+            Status: InProgress
+            Comments:
+            * Two quotes so far. Waiting on a third before deciding.
+        SubProjects:
+        * Accounts|Signing up and logging in
+            Tickets:
+            * Set up the database
+                DependsOn:
+                * [[Choose a hosting provider]]
+            * Build the login page
+                DependsOn:
+                * [[Set up the database]]
+                * [[Design the login screen]]
+                SubTasks:
+                * Login form
+                * Password reset
+                    Comments:
+                    * Check whether the email provider limits how many emails we can send
+                * Remember me on this device
+    * Launch|Telling people about the new site
+        Tickets:
+        * Write the launch announcement
+            DependsOn:
+            * [[Build the login page]]

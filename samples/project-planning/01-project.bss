@@ -1,0 +1,12 @@
+# Project planning, step 1: a project
+
+A project is the root of everything in this sample. In this first step it has a name, a description and the dates it runs between. The condition on DueDate flags a project that is due before it starts.
+
+```bss
+t Project|upj
+    A project: what you are delivering, and when.
+    s+                          Name|Project|A short name for the project
+    s                           Description|Description|What the project will deliver, and why
+    dd                          StartDate|Starts|When the project starts
+    dd|(DueDate >= StartDate)   DueDate|Due|When the project should be finished
+```

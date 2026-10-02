@@ -1,0 +1,40 @@
+# Fearless Focus
+
+This is the Fearless Focus program, as it is published. When you start it, you get your own copy of this plan. Every relative date, such as `+1d`, becomes a real date counted from the day you start, and your routine and reviews begin repeating the next day, leaving the first day for setting up your plan.
+
+The assessment measures are locked, so that your results can be compared from month to month. So are the guides for the daily and weekly reviews.
+
+FocusPlan: My Fearless Focus plan
+    Assessments:
+    * Where I am
+        Schedule: Monthly check|Monthly||+1m
+        Items:
+        * Weight|Health|kg|Weigh yourself first thing in the morning, before breakfast
+        * Waist|Health|cm|Measure around your belly button, breathing out
+        * Distance in 30 minutes|Health|km|Walk or jog for 30 minutes and measure how far you get with a phone app
+        * Relationship with my partner|Relationships|1-10|1 is abysmal and 10 is perfect
+        * Relationship with my children|Relationships|1-10|1 is abysmal and 10 is perfect
+        * Relationship with my parents|Relationships|1-10|1 is abysmal and 10 is perfect
+        * Relationships with my closest friends|Relationships|1-10|1 is abysmal and 10 is perfect
+        * Monthly income|Money|per month|Everything that comes in: your job, rent, royalties, dividends and interest
+        * Monthly expenses|Money|per month|Every regular payment: mortgage, loans, bills, food, fuel and insurance
+        * Net assets|Money|total|Everything you own, minus everything you owe
+        * Happiness|Mind|1-10|1 is absolutely miserable and 10 is perfectly happy and content
+        * Coping with negative emotions|Mind|1-10|1 is terrible and 10 is excellent
+    Routine:
+    * Morning session|Picture your goals achieved and feel the gratitude as if you already have them, then choose today's tasks from your weekly plan
+        Schedule: Every morning|Daily||+1d
+            DueTime: 7:00 am
+    * Affirmation practice|Take a deep breath and slowly say your affirmation, in your mind or out loud
+        Schedule: Every day|Daily||+1d
+            DueTime: 7:15 am
+    DailyReviews:
+    * Evening review
+        Guide: Take some time in the evening to review your day. Write down what you did, the progress you made, how you felt and anything worth remembering. Note what you are grateful for, so that you can read it again tomorrow morning, and the tasks and ideas for tomorrow.
+        Schedule: Every evening|Daily||+1d
+            DueTime: 9:00 pm
+    WeeklyReviews:
+    * Weekly planning
+        Guide: Look at how far you got with this week's tasks, and measure your progress against last week. Do more of the actions that work and drop the ones that do not. If you took no action at all, ask whether it was time or fear that held you back. Then plan only what you can really do in the coming week.
+        Schedule: Every week|Weekly||+1d
+            DueTime: 6:00 pm

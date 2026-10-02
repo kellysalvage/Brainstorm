@@ -1,0 +1,142 @@
+# Job hunting
+
+This structure turns a job search into a plan: the job you want and how long your money will last, the companies you have applied to, the agents working for you, everyone you have spoken to, your interviews, and the worries that come with looking for work.
+
+It builds on the built-in types. Tasks, contacts, risks and comments come from Brainstorm itself.
+
+## The search
+
+The search is the top of the tree. It knows how long your savings will last, and it adds up your applications so that you can see what is working.
+
+```bss
+t JobSearch|ujs
+    """
+    Your job search: the job you want, how long your money will last, the companies and agents
+    you are working with, and everyone you have spoken to.
+    """
+    s+                               Name|Search|e.g. "My next project manager role"
+    s+                               TargetRole|Target Role|The job you are looking for
+    n|0..                            TargetSalary|Target Salary|The salary you are aiming for
+    dd=today                         StartDate|Started|When you started looking
+    dd|(TargetDate >= StartDate)     TargetDate|Job By|When you want to have a new job
+    n|0..                            Savings|Savings|The money you have to live on while you look
+    n|0..                            MonthlyCosts|Monthly Costs|What you need to live on each month
+    l:ucy                            Companies|Companies|The companies you are interested in or have applied to
+    l:uag                            Agents|Agents|The recruitment agents working for you
+    l:ucn                            Network|Network|People who could help: former colleagues, friends and people in the industry
+    l:ucv                            Conversations|Conversations|Everyone you have spoken to, and what came of it
+    l:tr                             Worries|Worries|Your fears and risks, measured so that you can face them
+    l:tt                             Routine|Routine|Your daily and weekly job search habits
+    l:tcm                            Comments|Comments|Notes about the search
+    n=(Savings / MonthlyCosts)|3..                                                         MonthsOfRunway|Months of Runway|How long your savings will last. Flagged when it is under three months.
+    i=(count(Companies.Applications, Stage != Interested))                                 ApplicationsSent|Applications Sent|How many jobs you have applied for
+    i=(count(Companies.Applications, Stage != Interested and Stage != Applied and Stage != Withdrawn))   ResponsesReceived|Responses|How many applications got an answer, good or bad
+    n=(ResponsesReceived / ApplicationsSent * 100)                                         ResponseRate|Response Rate (%)|If this is low, change your CV
+    i=(count(Companies.Applications.Interviews))                                           InterviewsHeld|Interviews|How many interviews you have had
+    i=(count(Companies.Applications, Stage = Offer or Stage = Accepted))                   OffersMade|Offers|How many offers you have had
+    i=(count(Conversations))                                                               ConversationsHeld|Conversations|How many conversations you have had
+```
+
+## Companies and applications
+
+A company holds your applications to it, so the list of companies is the list of everywhere you have applied. Each application keeps the CV and cover letter you sent, so that you always know which version a company has seen.
+
+```bss
+c ApplicationStage
+    Interested
+    Applied
+    Screening
+    Interview
+    Offer
+    Accepted
+    Rejected
+    Withdrawn
+
+t Company|ucy
+    A company you are interested in or have applied to.
+    s+        Name|Company|The company's name
+    s         Sector|Sector|What the company does
+    s         Website|Website|The company's website or careers page
+    l:uap     Applications|Applications|The jobs you have applied for here
+    l:tcm     Comments|Comments|Notes about the company
+
+t Application|uap
+    A job you are interested in or have applied for.
+    s+                          Name|Role|The job title
+    ApplicationStage=Interested Stage|Stage|How far the application has got
+    dd                          AppliedOn|Applied On|When you applied
+    n|0..                       Salary|Salary|The salary on offer
+    i|1..5                      Fit|Fit|How well the job fits what you want, from 1 to 5
+    r:uag                       Agent|Through Agent|The agent who put you forward, if there was one
+    s                           Advert|Job Advert|A link to the job advert
+    file                        CV|CV Sent|The CV you sent
+    file                        CoverLetter|Cover Letter|The cover letter you sent
+    l:uiv                       Interviews|Interviews|Your interviews for this job
+    l:tt                        NextSteps|Next Steps|What you need to do next
+    l:tcm                       Comments|Comments|Notes about the application
+```
+
+## Interviews
+
+```bss
+c InterviewFormat
+    Phone
+    Video
+    InPerson
+
+t Interview|uiv
+    An interview for a job.
+    s+                  Name|Interview|e.g. "First interview"
+    d                   Date|Date|When the interview is
+    InterviewFormat=Video   Format|Format|Phone, video or in person
+    l:r:tc              Interviewers|Interviewers|Who interviewed you
+    s                   HowItWent|How It Went|What went well, and what you would do differently
+    i|1..10             Confidence|Confidence|How confident you feel about it, from 1 to 10
+    l:tt                Preparation|Preparation|What to do to get ready
+    l:tcm               Comments|Comments|Notes about the interview
+```
+
+## Agents and your network
+
+Recruitment agents and the people you know are how many jobs are found. Each agent and each person in your network can have follow-ups with a schedule, such as a call every Monday, so that nobody is forgotten.
+
+```bss
+t Agent|uag
+    A recruitment agency that is looking for jobs for you.
+    s+        Name|Agency|The agency's name
+    r:tc      Recruiter|Recruiter|The person you deal with
+    s         LookingFor|Looking For|What they are looking for on your behalf
+    l:tt      FollowUps|Follow-ups|Calls and emails to keep in touch, which can repeat
+    l:tcm     Comments|Comments|Notes about the agent
+
+t Connection|ucn
+    Someone you know who could help you find a job.
+    s+        Name|Name|Their name
+    s         HowWeKnow|How We Know Each Other|e.g. "Worked together at Northline Logistics"
+    s         CanHelpWith|Can Help With|Introductions, advice, or a reference
+    l:tt      FollowUps|Follow-ups|Messages and calls to keep in touch, which can repeat
+    l:tcm     Comments|Comments|Notes about the connection
+```
+
+## Conversations
+
+One log of everyone you have spoken to. Each conversation can link to the people you spoke with, and to the company or agent it was about.
+
+```bss
+c ConversationType
+    Call
+    Email
+    Meeting
+    Message
+
+t Conversation|ucv
+    A call, email, meeting or message about your job search.
+    s+                     Name|About|What the conversation was about
+    ConversationType=Call  Kind|Kind|Call, email, meeting or message
+    d=now                  Date|Date|When it happened
+    r:ucy                  Company|Company|The company it was about, if any
+    r:uag                  Agent|Agent|The agent it was with, if any
+    s                      Outcome|Outcome|What came of it
+    l:r:tc                 With|Spoke With|The people you spoke to
+    l:tt                   NextSteps|Next Steps|What you need to do next
+```

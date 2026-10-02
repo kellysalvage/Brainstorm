@@ -1,0 +1,14 @@
+# Website relaunch
+
+Each ticket is one line. A ticket's status decides which column it sits in on the kanban board: tickets with no status start as ToDo.
+
+Project: Website relaunch|A faster, simpler website that works well on phones|2026-10-05|2026-12-18
+    Tickets:
+    * Agree the new site map
+        Status: Done
+    * Choose a hosting provider
+        Status: InProgress
+    * Set up the database
+    * Design the login screen
+    * Build the login page
+    * Write the launch announcement

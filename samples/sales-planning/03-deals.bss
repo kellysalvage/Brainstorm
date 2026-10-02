@@ -1,0 +1,34 @@
+# Sales planning, step 3: deals
+
+A deal is something you hope to sell to a client. Every deal moves through the same stages, from a first lead to won or lost. The stages are a choice, and a new deal starts as a Lead because of its default value.
+
+```bss
+c DealStage
+    Lead
+    Qualified
+    Proposal
+    Negotiation
+    Won
+    Lost
+
+t SalesPlan|usl
+    A sales plan for a period: what you aim to sell, and who you will sell it to.
+    s+                          Name|Plan|e.g. "Sales Q4 2026"
+    dd                          StartDate|Starts|The first day of the period
+    dd|(EndDate >= StartDate)   EndDate|Ends|The last day of the period
+    n+|0..                      Target|Target|How much you aim to sell in the period
+    l:ucl                       Clients|Clients|The people and companies you are selling to
+
+t Client|ucl
+    A person or company you are selling to.
+    s+        Name|Client|The client's name
+    r:tc      MainContact|Main Contact|The person you deal with
+    l:udl     Deals|Deals|What you hope to sell them
+
+t Deal|udl
+    Something you hope to sell to a client.
+    s+                Name|Deal|e.g. "Website redesign"
+    n+|0..            Value|Value|What the deal is worth
+    DealStage=Lead    Stage|Stage|How far the deal has got
+    dd                ExpectedClose|Expected Close|When you expect the client to decide
+```

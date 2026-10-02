@@ -1,0 +1,17 @@
+# Sales Q4 2026
+
+Each deal now ends with its probability. The website redesign is worth 12,000 at a 60% chance, so the app shows its weighted value as 7,200.
+
+SalesPlan: Sales Q4 2026|2026-10-01|2026-12-31|50000
+    Clients:
+    * Brightside Dental|[[Priya Shah]]
+        Deals:
+        * Monthly support|6000|Won|2026-10-10|100
+        * Website redesign|12000|Proposal|2026-11-15|60
+    * Northgate Builders|[[Tom Okafor]]
+        Deals:
+        * Booking system|25000|Qualified|2026-12-10|30
+    * Fern and Co|[[Ellie Fern]]
+        Deals:
+        * Online shop|18000||2026-12-20|10
+        * Logo refresh|3000|Lost|2026-10-20|0

@@ -1,0 +1,17 @@
+# Sales Q4 2026
+
+Each deal is one line: its name, value, stage and when you expect a decision. The online shop has no stage, so it starts as a Lead.
+
+SalesPlan: Sales Q4 2026|2026-10-01|2026-12-31|50000
+    Clients:
+    * Brightside Dental|[[Priya Shah]]
+        Deals:
+        * Monthly support|6000|Won|2026-10-10
+        * Website redesign|12000|Proposal|2026-11-15
+    * Northgate Builders|[[Tom Okafor]]
+        Deals:
+        * Booking system|25000|Qualified|2026-12-10
+    * Fern and Co|[[Ellie Fern]]
+        Deals:
+        * Online shop|18000||2026-12-20
+        * Logo refresh|3000|Lost|2026-10-20

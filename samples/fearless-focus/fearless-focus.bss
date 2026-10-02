@@ -23,7 +23,12 @@ t FocusPlan|ufp
     l:tt    Routine|Routine|Your regular sessions, such as morning planning and affirmation practice
     l:udr   DailyReviews|Daily Reviews|Your evening reviews and journal
     l:uwr   WeeklyReviews|Weekly Reviews|Your weekly planning sessions
+    l:tcm   Comments|Comments|Notes about your plan as a whole
 ```
+
+## Comments
+
+Everything in the plan can have comments: why a goal was laid to rest, how a milestone was reached, or what you learned from an action. Comments keep your thoughts apart from the description of an item, and you never have to write one. Comment is a built-in type, and the built-in types, such as goals, milestones, risks, controls and tasks, already have a list of them. The types in this structure that are not built on one of those have a list of comments too, `l:tcm Comments`.
 
 ## Goals
 
@@ -41,11 +46,14 @@ x FocusGoal:Goal|ufg
     GoalStatus=Active  Status|Status|Active, on hold, achieved, or laid to rest by a conscious decision
     b                  ForSomeoneElse|For Someone Else|True if you want this mainly to please or impress someone else. Consider replacing it with a goal you really want.
     s                  Feeling|How It Will Feel|How you will feel when you have achieved it. If it does not excite you, it may not be the right goal.
+    l:uac              Actions|Actions|The actions that move you towards the goal. An action with a schedule is a regular habit.
 ```
+
+A goal's actions are Actions (see below), so every action can say what outcome you expect from it.
 
 ## Actions
 
-Chapter 9 asks you to say, for every action, what outcome you expect and how you will measure it, so that you can tell whether it worked. An action is a task with those extra details. A task in a goal's actions becomes an Action as soon as it has one of them, such as `ExpectedOutcome:`.
+Chapter 9 asks you to say, for every action, what outcome you expect and how you will measure it, so that you can tell whether it worked. An action is a task with those extra details.
 
 ```bss
 x Action:TaskItem|uac
@@ -76,6 +84,8 @@ x FocusRisk:Risk|ufr
     n=(ExpectedSuffering / AcceptableSuffering * 10)|..10   SuggestedSeverity|Suggested Severity|A guide for Severity. Over 10 means more suffering than you are willing to accept.
 ```
 
+"I don't have the time" is not a risk. It is a belief, and usually it hides a real fear, such as spending time on something and having it not work out. Write down the fear instead.
+
 ## Vision and affirmation
 
 Chapter 6 builds a vision board you see every day, and chapter 7 merges two or three affirmations into one powerful statement.
@@ -85,11 +95,13 @@ t VisionBoard|uvb
     What you want your life to look like, kept somewhere you will see it every day.
     s+      Name|Vision|A name for your vision
     l:img   Pictures|What I See|The things, places, people and lifestyle you want in your life
+    l:tcm   Comments|Comments|Notes about your vision
 
 t FocusAffirmation|ufa
     One short, powerful statement made from the two or three affirmations that resonate most with you.
     s+      Name|Affirmation|Your focus affirmation, short enough to remember
     l:s     Sources|Built From|The affirmations you merged to make it
+    l:tcm   Comments|Comments|Notes about your affirmation, such as what your inner critic says
 ```
 
 ## Daily and weekly reviews
@@ -109,6 +121,7 @@ t DailyReview|udr
     l:s     Gratitude|Grateful For|What you are grateful for today. Read it again tomorrow morning.
     l:s     Ideas|Ideas|Ideas to look into in the future
     l:tt    Tomorrow|For Tomorrow|Tasks to do tomorrow
+    l:tcm   Comments|Comments|Notes about the day
 
 t WeeklyReview|uwr
     Your weekly planning session: look back at the week, measure your progress, and plan the week ahead.
@@ -120,4 +133,5 @@ t WeeklyReview|uwr
     s       WhatDidNot|What Did Not Work|The actions that made little or no difference
     s       HeldBack|What Held Me Back|Was it time, or fear? If it was fear, add it to your goal as a new risk.
     l:tt    ToReview|To Review Next Week|Actions whose outcomes can only be measured later
+    l:tcm   Comments|Comments|Notes about the week
 ```

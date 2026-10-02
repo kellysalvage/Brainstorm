@@ -1,0 +1,39 @@
+# Website launch template
+
+This is a template, not a project in progress. Its dates are relative: the project starts on the day someone starts it (`+0d`) and is due ten weeks later. When the template is started, every relative date becomes a real one, every ticket starts as ToDo, and every link points to the matching ticket in the new project.
+
+Comments are lists, and lists are always copied, so this template has none. Anything written here would appear in every project started from it.
+
+Project: Website launch|A new website, from the site map to launch day|+0d|+10w
+    Tickets:
+    * Agree the site map
+        DueDate: +1w
+    SubProjects:
+    * Design|The look and feel of the new site
+        Tickets:
+        * Design the page layouts
+            DueDate: +3w
+            DependsOn:
+            * [[Agree the site map]]
+    * Build|Everything needed to run the new site
+        Tickets:
+        * Choose a hosting provider
+            DueDate: +2w
+        * Build the pages
+            DueDate: +7w
+            DependsOn:
+            * [[Design the page layouts]]
+            * [[Choose a hosting provider]]
+        * Test on phones, tablets and computers
+            DueDate: +8w
+            DependsOn:
+            * [[Build the pages]]
+    * Launch|Telling people about the new site
+        Tickets:
+        * Write the launch announcement
+            DueDate: +9w
+        * Go live
+            DueDate: +10w
+            DependsOn:
+            * [[Test on phones, tablets and computers]]
+            * [[Write the launch announcement]]

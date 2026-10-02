@@ -1,0 +1,41 @@
+# Sales Q4 2026
+
+The document has not changed since step 6: all the new values are calculated. For this document the app shows:
+* **Won:** 6,000, from the monthly support deal
+* **Forecast:** 16,500, from the open deals: 7,200 for the website redesign, 7,500 for the booking system and 1,800 for the online shop
+* **Deals won:** 1
+* **Gap to target:** 44,000
+
+The lost logo refresh is not counted anywhere.
+
+SalesPlan: Sales Q4 2026|2026-10-01|2026-12-31|50000
+    Clients:
+    * Brightside Dental|[[Priya Shah]]
+        Deals:
+        * Monthly support|6000|Won|2026-10-10|100
+        * Website redesign|12000|Proposal|2026-11-15|60
+            FollowUps:
+            * Send the revised proposal
+                DueDate: 2026-10-09
+            * Check in with Priya
+                Schedule: Fortnightly check-in|Weekly|2|2026-10-09
+                    On: Fri
+                    EndDate: 2026-11-15
+                    DueTime: 10:00 am
+        Activities:
+        * Discovery call|Call|2026-10-02T14:00||They want online booking on the new website
+        * Sent the first proposal|Email|2026-10-06T09:15||Priya asked for a lower price on hosting
+    * Northgate Builders|[[Tom Okafor]]
+        Deals:
+        * Booking system|25000|Qualified|2026-12-10|30
+            FollowUps:
+            * Book a demo of the booking system
+                DueDate: 2026-10-14
+        Activities:
+        * Introduction at the trade fair|Meeting|2026-10-01T11:00||Tom is interested but needs to talk to his partners
+    * Fern and Co|[[Ellie Fern]]
+        Deals:
+        * Online shop|18000||2026-12-20|10
+        * Logo refresh|3000|Lost|2026-10-20|0
+        Activities:
+        * Asked about the online shop|Call|||Ellie will think about it after Christmas

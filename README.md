@@ -151,6 +151,8 @@ A condition can use everything a calculated value can (see Calculated values), p
 * the comparisons `=`, `!=`, `<`, `<=`, `>` and `>=`
 * `and` and `or`, to combine comparisons
 
+When a choice is compared with a name, as in `Stage = Won`, the name is read as one of the choice's values. This holds even if an element has the same name, so a total called Won can still count the deals whose stage is Won.
+
 If an element used by a condition is blank, the condition is not checked. The blank element is flagged on its own if it is expected.
 
 ### Calculated values
@@ -177,6 +179,7 @@ A formula can use:
 * the names of other elements on the same item, including other calculated values
 * `+`, `-`, `*` and `/`
 * brackets, to control the order things are worked out in
+* totals over the item's lists, such as `sum(Deals.Value)` (see Totals over lists)
 
 The rules for calculated values are:
 * A calculated value is always read-only. Users never write it in a document. If a document gives it a value, the value is ignored and flagged.
@@ -187,7 +190,35 @@ The rules for calculated values are:
 * A formula that depends on itself, directly or through other calculated values, is reported as a problem in the structure document.
 * Calculated values are left out when a brainstorm is written out as a brainstorm document. A brainstorm document is a working document that only holds what people type. Reports can include calculated values.
 
-Calculations over lists, such as totals, are not supported yet. They may be added later using something like C# LINQ expressions.
+#### Totals over lists
+A formula can add up the values in the item's lists, using `sum`, `count`, `average`, `min`, `max` and `stddeviation`. Each one takes a path to the values, written as element names separated by dots, and an optional condition that picks which items count:
+```bss
+n=(sum(Clients.Deals.Value, Stage = Won))                              Won|Won|What you have sold so far
+n=(sum(Clients.Deals.WeightedValue, Stage != Won and Stage != Lost))   Forecast|Forecast|What you can expect from open deals
+i=(count(Clients.Deals, Stage = Won))                                  DealsWon|Deals Won|How many deals you have won
+n=(Target - Won)                                                       Gap|Gap to Target|What is still needed to reach the target
+```
+The path goes down through lists. `Clients.Deals.Value` means the Value of every deal of every client. `count` counts items, so its path ends at a list rather than a value.
+
+The rules for totals are:
+* A path can only go down into the item's own lists, never up to the item it belongs to or across to other items. A formula still only sees its own item and the items inside it.
+* The condition is checked against each item at the end of the path, and only the items that make it true are counted. It is written like any other condition (see Conditions).
+* In a condition, a name is first looked up on the item being checked. If that item has no element with that name, it is looked up on the item the formula belongs to. This is how a condition compares each item with a total, as in the example below.
+* Blank values are skipped. `average` divides by the number of values that are not blank.
+* The `sum` and `count` of an empty list are 0. The `average`, `min` and `max` of an empty list are blank.
+
+#### Finding unusual values
+`stddeviation` finds the value that is a given number of standard deviations from the average of a list. Values beyond it are unusual: they may be wild cards worth a closer look, or mistakes. It takes a path, the number of standard deviations, and an optional condition, like the other totals:
+```bss
+n=(stddeviation(Clients.Deals.Value, 2))           UnusuallyLarge|Unusually Large|Deals worth more than this are far above the average
+n=(stddeviation(Clients.Deals.Value, -2))          UnusuallySmall|Unusually Small|Deals worth less than this are far below the average
+i=(count(Clients.Deals, Value > UnusuallyLarge))   UnusualDeals|Unusual Deals|How many deals are unusually large. Check them for mistakes.
+```
+A positive number gives a value above the average, and a negative number gives a value below it. The standard deviation is worked out from every value in the list, and a list with fewer than two values gives a blank result.
+
+The app can use the same calculation to highlight unusual values when a list is shown as a grid.
+
+More list calculations may be added later, as long as they stay this simple.
 
 A formula that is used in several places can be given a name and reused. See Advanced: functions at the end of this document.
 
@@ -204,7 +235,8 @@ The rules for default values are:
 * A default is filled in once, when an item is created. After that it is an ordinary value that can be changed or cleared.
 * Copies are items too. A record element in a copy starts with its default instead of blank. This is how every task in a copy starts as ToDo: TaskItem declares `TaskStatus=ToDo Status`.
 * A value with spaces or a pipe is written in double quotes, e.g. `s="Not started"`, because a space ends the part before the element name.
-* A date can default to `today`, or to a relative date such as `+1w`. Both are worked out when the item is created. For a copy, today is the copy date.
+* A date can default to `today`, or to a relative date such as `+1w`. A date and time can default to `now`. These are worked out when the item is created. For a copy, today is the copy date.
+* A link to a user can default to `me`, the user who creates the item. When a document is imported, that is the user who imports it. For example, `r:tu=me Author`.
 * A default counts as a value, so an expected element with a default is never flagged as missing.
 * An element can have a default or a formula, not both.
 * A default must be one of its choice's values, and must pass the element's rules. If it does not, this is reported as a problem in the structure document.
@@ -294,6 +326,8 @@ The file can be one that has been uploaded to Brainstorm, or a link to a file el
 ### Built-in complex types
 * t List<T>|l:x
     A generic list of objects where x is the name or alias of the objects that the list holds
+* t Reference<T>|r:x
+    A link to an item of type x that lives somewhere else in the brainstorm, such as a ticket that another ticket depends on. A list of links is written `l:r:x`. See Links.
 * t TaskItem|tt
     A task object that we can use in kanban boards
 **Definition**
@@ -309,11 +343,12 @@ t TaskItem|tt
     d! DueDate|Due Date|The date and time the task should be done by
     n!|0.. Estimate|Estimate (hours)|How long the task is expected to take
     n!|0.. Cost|Cost|What the task costs, if anything
-    tc AssignedTo|Assigned To|Who will do the task
-    tu CreatedBy|Created By|The user that created the task
+    r:tc AssignedTo|Assigned To|Who will do the task
+    r:tu=me CreatedBy|Created By|The user that created the task
     d CompletedOn|Completed On|The date and time the task was done
     l:tt SubTasks|Sub-tasks|The task has been broken down into smaller tasks and can be considered complete when the sub tasks are all done.
     ts Schedule|Repeats|Optional. Makes the task repeat, such as a weekly gym session or a monthly bill payment.
+    l:tcm Comments|Comments|Optional. Your thoughts about the task, kept apart from its description
 ```
 StartDate and DueDate are templated so that relative dates, such as `+2d`, are carried into copies. Any task with a Schedule repeats, wherever it is. See Repeating items.
 * t Contact|tc
@@ -325,6 +360,7 @@ t contact|tc
     s Name|Name|The first name of the contact 
     s Surname|The surname of the contact
     s CompanyName|The name of the company if the contact is a contact person in a company
+    l:tcm Comments|Comments|Optional. Notes about the contact
 ```
 * t ContactDetail|tcd
     A single detaial about a contact, for example, the phone number or email address.
@@ -358,6 +394,7 @@ t Goal|tg
     l:tt     Actions|Actions|The tasks that move you towards the goal. A task with a schedule is a regular action.
     l:tr     Risks|Risks|What could stop you
     l:tg     SubGoals|Sub-goals|Smaller goals that make up this one
+    l:tcm    Comments|Comments|Optional. Your thoughts about the goal, kept apart from its description
 ```
 * t Milestone|tm
     A measurable point on the way to a goal.
@@ -370,6 +407,7 @@ t Milestone|tm
     s!       Measure|Measure|What you measure, e.g. body fat (%)
     n!       Target|Target|The value you want to reach
     n        Actual|Actual|The value you reached
+    l:tcm    Comments|Comments|Optional. Notes about the milestone, such as how you reached it
 ```
 * t Risk|tr
     Something that could stop you or hurt you. A risk is rated twice: as it is now, and as it will be once its controls are in place. Controls often overlap, so the remaining risk is rated by judgement rather than worked out from the controls.
@@ -393,6 +431,7 @@ t Risk|tr
     n|0..|(ResidualFinancialImpact <= FinancialImpact)    ResidualFinancialImpact|Financial Impact After Controls|What it would cost once your controls are in place
     n=(ResidualSeverity * ResidualLikelihood / 10)        ResidualScore|Residual Score|The risk that is left once your controls are in place
     n=(ResidualFinancialImpact * ResidualLikelihood / 10) ResidualExpectedLoss|Residual Expected Loss|The cost that is left once your controls are in place
+    l:tcm                                                 Comments|Comments|Optional. Your thoughts about the risk
 ```
 Every risk has a Severity, including financial ones, so that all risks can be ranked together by RiskScore. A financial risk also has a FinancialImpact in money, which gives its ExpectedLoss. Each field has one unit: Severity is always 1 to 10, and FinancialImpact is always money.
 * t Control|trc
@@ -406,6 +445,7 @@ t Control|trc
     i!|0..100       Effectiveness|Effectiveness (%)|How much of the risk you expect this control to remove
     n!|0..          Cost|Cost|What it costs to put the control in place
     l:tt            Tasks|Tasks|The tasks that put the control in place, in the order they are done
+    l:tcm           Comments|Comments|Optional. Notes about the control, such as whether it is working
 ```
 Effectiveness and Cost are used together to decide whether a control is worth doing. A Prevent control lowers the residual likelihood of its risk, and a ReduceImpact control lowers its residual severity or financial impact.
 * t Assessment|ta
@@ -418,6 +458,7 @@ t Assessment|ta
     dd=today        Date|Date|When the measurements were taken
     ts              Schedule|Repeats|How often to take the snapshot
     l:tai+          Items|Measurements|What you measure
+    l:tcm           Comments|Comments|Optional. Notes about this snapshot
 ```
 * t AssessedItem|tai
     One thing you measure in an assessment.
@@ -430,6 +471,23 @@ t AssessedItem|tai
     s!              Unit|Unit|e.g. kg, $, or 1-10 for a rating
     s!              HowMeasured|How Measured|How to measure it the same way each time
     n+              Value|Value|The measurement
+    l:tcm           Comments|Comments|Optional. Notes about the measurement, such as anything unusual on the day
+```
+* t Comment|tcm
+    A comment on an item: who said what, and when. Comments let people add their thoughts to an item without changing its description, and they are never required. The built-in item types, such as TaskItem, Goal, Risk and Contact, already have a list of comments. To give your own types comments, add `l:tcm Comments`.
+    **Definition**
+```bss
+t Comment|tcm
+    A comment on an item: who said what, and when.
+    s+        Name|Comment|What you want to say
+    d=now     Date|Date|When the comment was made
+    r:tu=me   Author|Author|Who made the comment
+```
+Because the date and the author are filled in for you, most comments are a single line of text. A comment's text is its Name, so a plain bullet is a whole comment:
+```bsd
+    Comments:
+    * Check the layout on small phones
+    * Agreed, I will test it on my old phone|2026-10-02T09:30|[[Sam Jones]]
 ```
 * t Schedule|ts
     A schedule says when a new copy of an item should be created. See Schedules for how to write one.
@@ -510,6 +568,14 @@ The declaration of this is similar to the declaration of a normal type, but star
 
 An extended type can be used anywhere the type it extends can be used. For example, a list of tasks can hold delegated tasks. See Shorthand for how a list item's type is chosen.
 
+An extended type can also say that a list it got from the original type holds its own kind of item. This is the one case where a repeated element is not ignored. For example, a ticket's sub-tasks should be tickets too, with their own comments and links:
+```bss
+x Ticket:TaskItem|uti
+    A piece of work in a project. A big ticket can be broken down into sub-tickets.
+    l:uti   SubTasks|Sub-tickets|Smaller tickets that make up this one
+```
+The list can only be changed to hold an extension of the type it held before. A list of tickets is still a list of tasks, so everything that works with tasks, such as the kanban board, still works.
+
 Simple types can be extended too. This is how a rule is given a name, so that people can use it without having to read or write it. The rules are written after the alias, each starting with a pipe. For example, an email address is text that matches a pattern:
 ```bss
 x EmailAddress:s|em|/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
@@ -554,7 +620,8 @@ The rules are:
 * Wherever a document names a type, its alias can be used instead. `udt: Book the venue` and `DelegatedTask: Book the venue` mean the same thing.
 * A complex element, such as a Schedule, can use shorthand after its colon. Its other elements are indented one level further below it.
 * Values on the line follow the order the elements are declared in the type, starting at Name. The type description belongs to the type, not to each item, so it never takes a position.
-* Only simple elements take a position: text, numbers, dates, times, true/false values and choices. Lists and complex elements are skipped when counting positions and are always written below the line.
+* Only simple elements take a position: text, numbers, dates, times, true/false values, choices and single links. Lists and complex elements are skipped when counting positions and are always written below the line. Calculated values are skipped too, because they are never written in a document.
+* Adding a new element at the end of a type keeps the positions of the elements before it, so documents written before the change still work. Adding one in the middle moves the positions of everything after it.
 * Leave a position empty to skip it. For example, `a||c` skips the second value.
 * Any element can be written on its own indented line below, as the element name, a colon, then the value.
 * Values on the shorthand line can not contain a pipe. Write such a value on its own line below instead.
@@ -587,8 +654,28 @@ Goal: Run a 5k|Go from the sofa to running 5k without stopping|+12w
         DueDate: +2d
 ```
 
+### Links
+A link points to an item that lives somewhere else in the same brainstorm, such as a ticket that another ticket depends on. It is written as the item's name between double square brackets, as in many wikis and note-taking apps:
+```bsd
+* Build the login page
+    DependsOn:
+    * [[Set up the database]]
+    * [[Design the login screen]]
+```
+If two items have the same name, the link is flagged. Add the names of the items above it, separated by slashes, to say which one you mean: `[[Website/Set up the database]]`.
+
+The rules for links are:
+* Links only reach items in the same brainstorm, with one exception: links to users and contacts reach the users and contacts in the system that the importing user has access to. For now, users and contacts are linked by name, e.g. `[[Sam Jones]]`. A contact's name for a link is its full name: its Name followed by its Surname. What happens when one can not be found depends on the import mode (see Importing and exporting).
+* When a document is imported, each link is turned into the internal id of the item it names. From then on, renaming an item does not break the links to it. When the brainstorm is written out as a document again, each link is written with the item's current name.
+* A link to an item that does not exist, or to a name that is not unique, is flagged.
+* A link never owns the item it points to. Deleting an item does not delete the items that link to it: their links are flagged instead.
+* Links that go round in a circle, such as two tickets that each depend on the other, are flagged.
+* When an item is copied, a link to another item inside the copy points to that item's copy. A link to an item outside the copy still points to the original.
+
+Renaming an item in a text editor does not update the links to it, because the document only holds names. Those links are flagged when the document is imported, until they are changed to the new name.
+
 ### When problems are reported
-Import never fails. A value the system can not understand, such as `Weight: about 80`, an expected value that is missing, or a value that breaks a rule, is kept as written and flagged so it can be fixed later in the document or in structured mode. While writing, flags are quiet hints. They are pointed out again when an item is marked as done, but nothing is blocked.
+In the default import mode, import never fails (see Importing and exporting for the stricter modes). A value the system can not understand, such as `Weight: about 80`, an expected value that is missing, or a value that breaks a rule, is kept as written and flagged so it can be fixed later in the document or in structured mode. While writing, flags are quiet hints. They are pointed out again when an item is marked as done, but nothing is blocked.
 
 Publishing and scheduling are stricter, because other people and future copies depend on the plan being complete. A program can not be published while its plan has problems, and a schedule does not create a copy while the original's plan has problems. The author is told what needs fixing.
 
@@ -610,6 +697,36 @@ t LifeCheck|ulc
     n NetWorth|Net Worth|Assets minus debts
     l:tt+ Steps|Steps|The things I do to complete the check
 ```
+
+### Importing and exporting
+A brainstorm can be written out as a document at any time, edited in any text editor, and imported again. The system does not try to match the items in an imported document with the items it already has: the text may be very different from what was written out. Every import creates a new brainstorm, and the user chooses what happens to the old one:
+* **Replace it.** The old brainstorm is deleted and the imported one takes its place. This is the usual choice.
+* **Keep both.** The imported brainstorm is given a different name.
+
+Replacing loses almost nothing, because nearly everything is in the document: items, statuses, comments, copies made by schedules, and links. Calculated values are not in the document, but they are worked out again on import. Links only reach items in the same brainstorm, so replacing one brainstorm never breaks the links in another.
+
+Importing over an existing brainstorm and reconciling the changes item by item may be added later, if it turns out to be needed.
+
+#### Import modes
+How carefully an import is checked is up to the user. Each user chooses a default mode in their settings, and can choose a different mode for any single import.
+
+| Mode | What happens when something does not check out | Suits |
+|------|-----------------------------------------------|-------|
+| **Default** | The import goes ahead, and problems are flagged. A link to a contact that does not exist creates the contact. | Individuals capturing their thoughts |
+| **Referential** | The import is refused if any link can not be found: to an item in the document, or to a user or contact in the system. Contacts written in the document count, and are added to the user's contacts. | Teams and shared projects |
+| **Strict** | The import is refused if anything is wrong: links, rules, expected values or conditions. This is the same check as publishing, applied to the whole document. | Authors, organisations and data from other systems |
+
+In every mode:
+* **An import never creates a user.** A user is someone who can log in, so a line of text must never create one. In the default mode, a link to an unknown user is kept as written and flagged.
+* **A refused import changes nothing.** There are no half-imported brainstorms.
+* **A refused import lists every problem at once,** with the line it is on, so that everything can be fixed before the next try.
+
+Later, an organisation may be able to require a minimum mode for its members, for example that everyone imports in referential mode.
+
+#### Inviting people
+When a document links to a user by email address, such as `[[sam@example.com]]`, and nobody with that address uses Brainstorm, the app can invite them. Invitations are never sent automatically: the app lists the unknown addresses, and the importing user chooses who to invite. Each person invited gets one email.
+
+Until they join, the link points to a pending user. A pending user counts as found, so the import is not refused in the referential or strict modes. When the person joins, everything already linked to them, such as the tasks assigned to them, is waiting in their account.
 
 ### Repeating items
 Structures are a way of knowing what tasks need to be done and why. Repeating an item is how the system creates the next round of tasks.

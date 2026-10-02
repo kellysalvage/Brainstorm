@@ -1,0 +1,55 @@
+# Jordan's job search
+
+Two recruitment agents are now looking for jobs for me. Agents are easy to lose touch with, so each one has a follow-up that repeats: I call Sarah at GreenTalent every Monday, and Dev at Apex Project People every other Wednesday.
+
+Sarah has already put me forward for a role at Tidal Works. The application links to her agency, so I can see which jobs came through which agent.
+
+JobSearch: Project manager in renewable energy|Project Manager|65000|2026-10-05|2027-01-31|15000|3200
+    Companies:
+    * Solaris Energy|Solar farms and battery storage|https://example.com/solaris/careers
+        Applications:
+        * Project Manager, Grid Connections|Applied|2026-10-08|64000|5
+            CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
+            CoverLetter: [Cover letter for Solaris Energy](letters/solaris-energy.pdf)
+    * Northwind Power|Offshore wind|https://example.com/northwind/careers
+        Applications:
+        * Senior Project Manager|Applied|2026-10-06|70000|3
+            CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
+    * Brightfield Solar|Rooftop solar for businesses|https://example.com/brightfield/careers
+        Applications:
+        * Delivery Manager|Applied|2026-10-09|58000|3
+            CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
+    * GreenGrid Networks|Electricity networks|https://example.com/greengrid/careers
+        Applications:
+        * PMO Manager|||66000|4
+            Comments:
+            * The advert closes on 2026-10-30. Ask around before applying.
+    * Tidal Works|Tidal energy projects|https://example.com/tidalworks/careers
+        Applications:
+        * Project Manager|Applied|2026-10-09|65000|4|[[GreenTalent Recruitment]]
+            CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
+    Agents:
+    * GreenTalent Recruitment|[[Sarah Khan]]|Project manager roles in renewable energy, 60,000 to 70,000
+        FollowUps:
+        * Call Sarah for an update
+            Schedule: Weekly call|Weekly||2026-10-12
+                On: Mon
+                DueTime: 10:00 am
+    * Apex Project People|[[Dev Patel]]|Contract project manager roles, in case a permanent job takes a while
+        FollowUps:
+        * Email Dev for an update
+            Schedule: Fortnightly email|Weekly|2|2026-10-14
+                On: Wed
+    Routine:
+    * Send one strong application|Search the job boards and send one application that really fits
+        Schedule: Applications|Weekly||2026-10-05
+            On: weekdays
+            DueTime: 9:00 am
+    * Reach out to someone|One message or call to someone in my network or an agent
+        Schedule: Networking|Weekly||2026-10-06
+            On: Tue, Thu
+            DueTime: 2:00 pm
+    * Review the week|Look at the numbers: applications sent, responses and interviews. If the responses are low, change the CV.
+        Schedule: Friday review|Weekly||2026-10-09
+            On: Fri
+            DueTime: 4:00 pm

@@ -1,0 +1,24 @@
+# Website relaunch
+
+The tickets are now grouped into three sub-projects. Build has a sub-project of its own, Accounts. On the kanban board, selecting a sub-project shows only its tickets, and selecting the project shows them all.
+
+Project: Website relaunch|A faster, simpler website that works well on phones|2026-10-05|2026-12-18
+    Tickets:
+    * Agree the new site map
+        Status: Done
+    SubProjects:
+    * Design|The look and feel of the new site
+        Tickets:
+        * Design the login screen
+    * Build|Everything needed to run the new site
+        Tickets:
+        * Choose a hosting provider
+            Status: InProgress
+        SubProjects:
+        * Accounts|Signing up and logging in
+            Tickets:
+            * Set up the database
+            * Build the login page
+    * Launch|Telling people about the new site
+        Tickets:
+        * Write the launch announcement

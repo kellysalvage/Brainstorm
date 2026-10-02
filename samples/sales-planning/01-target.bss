@@ -1,0 +1,12 @@
+# Sales planning, step 1: a target
+
+A sales plan covers a period, such as a quarter, and has a target: how much you aim to sell. The target is expected, so a plan without one is flagged, and the condition on EndDate flags a period that ends before it starts.
+
+```bss
+t SalesPlan|usl
+    A sales plan for a period: what you aim to sell.
+    s+                          Name|Plan|e.g. "Sales Q4 2026"
+    dd                          StartDate|Starts|The first day of the period
+    dd|(EndDate >= StartDate)   EndDate|Ends|The last day of the period
+    n+|0..                      Target|Target|How much you aim to sell in the period
+```

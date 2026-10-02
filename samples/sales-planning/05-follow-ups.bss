@@ -1,0 +1,41 @@
+# Sales planning, step 5: follow-ups
+
+Deals are won by following up. A follow-up is a task, so it appears in "My tasks" and on the kanban board, and it can have a schedule, such as a check-in call every other Friday. It adds one thing to a task: the outcome.
+
+```bss
+c DealStage
+    Lead
+    Qualified
+    Proposal
+    Negotiation
+    Won
+    Lost
+
+t SalesPlan|usl
+    A sales plan for a period: what you aim to sell, and who you will sell it to.
+    s+                          Name|Plan|e.g. "Sales Q4 2026"
+    dd                          StartDate|Starts|The first day of the period
+    dd|(EndDate >= StartDate)   EndDate|Ends|The last day of the period
+    n+|0..                      Target|Target|How much you aim to sell in the period
+    l:ucl                       Clients|Clients|The people and companies you are selling to
+
+t Client|ucl
+    A person or company you are selling to.
+    s+        Name|Client|The client's name
+    r:tc      MainContact|Main Contact|The person you deal with
+    l:udl     Deals|Deals|What you hope to sell them
+
+t Deal|udl
+    Something you hope to sell to a client.
+    s+                               Name|Deal|e.g. "Website redesign"
+    n+|0..                           Value|Value|What the deal is worth
+    DealStage=Lead                   Stage|Stage|How far the deal has got
+    dd                               ExpectedClose|Expected Close|When you expect the client to decide
+    i|0..100                         Probability|Probability (%)|How likely the deal is to be won
+    n=(Value * Probability / 100)    WeightedValue|Weighted Value|What the deal is worth once its probability is taken into account
+    l:ufu                            FollowUps|Follow-ups|The next steps
+
+x FollowUp:TaskItem|ufu
+    A next step with a client, such as sending a proposal or a regular check-in call.
+    s       Outcome|Outcome|What happened
+```

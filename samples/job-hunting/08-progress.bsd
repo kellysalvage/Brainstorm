@@ -1,0 +1,142 @@
+# Jordan's job search
+
+It is time for the Friday review. I have not had to count anything: the app adds it all up from the plan. For this document it shows:
+* **Applications sent:** 4. GreenGrid is not counted, because I have not applied yet.
+* **Responses:** 3, from Solaris Energy, Northwind Power and Tidal Works.
+* **Response rate:** 75%, so my CV is working.
+* **Interviews:** 2.
+* **Offers:** none yet.
+* **Conversations:** 5.
+* **Months of runway:** about 4.7.
+
+The numbers say the CV is fine, and that the best interview came through Mark. I have added a comment to the search, so that next week's plan follows the evidence.
+
+JobSearch: Project manager in renewable energy|Project Manager|65000|2026-10-05|2027-01-31|15000|3200
+    Companies:
+    * Solaris Energy|Solar farms and battery storage|https://example.com/solaris/careers
+        Applications:
+        * Project Manager, Grid Connections|Interview|2026-10-08|64000|5
+            CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
+            CoverLetter: [Cover letter for Solaris Energy](letters/solaris-energy.pdf)
+            Interviews:
+            * First interview|2026-10-20T11:00|Video|They liked my logistics experience, and asked a lot about managing stakeholders and suppliers|7
+                Interviewers:
+                * [[Lena Ortiz]]
+                * [[Raj Mehta]]
+                Preparation:
+                * Research the grid connection projects Solaris has running
+                    Status: Done
+                * Prepare three stories about delivering a project under pressure
+                    Status: Done
+                Comments:
+                * Questions I was asked: how I handle a supplier who misses a deadline, and how I report progress to a board
+    * Northwind Power|Offshore wind|https://example.com/northwind/careers
+        Applications:
+        * Senior Project Manager|Rejected|2026-10-06|70000|3
+            CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
+    * Brightfield Solar|Rooftop solar for businesses|https://example.com/brightfield/careers
+        Applications:
+        * Delivery Manager|Applied|2026-10-09|58000|3
+            CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
+    * GreenGrid Networks|Electricity networks|https://example.com/greengrid/careers
+        Applications:
+        * PMO Manager|||66000|4
+            Comments:
+            * The advert closes on 2026-10-30. Ask around before applying.
+    * Tidal Works|Tidal energy projects|https://example.com/tidalworks/careers
+        Applications:
+        * Project Manager|Screening|2026-10-09|65000|4|[[GreenTalent Recruitment]]
+            CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
+            Interviews:
+            * Screening call|2026-10-16T09:30|Phone|Friendly. They want someone who can start before Christmas|6
+                Interviewers:
+                * [[Amy Turner]]
+                Preparation:
+                * Prepare questions about the team and the start date
+                    Status: Done
+    Agents:
+    * GreenTalent Recruitment|[[Sarah Khan]]|Project manager roles in renewable energy, 60,000 to 70,000
+        FollowUps:
+        * Call Sarah for an update
+            Schedule: Weekly call|Weekly||2026-10-12
+                On: Mon
+                DueTime: 10:00 am
+    * Apex Project People|[[Dev Patel]]|Contract project manager roles, in case a permanent job takes a while
+        FollowUps:
+        * Email Dev for an update
+            Schedule: Fortnightly email|Weekly|2|2026-10-14
+                On: Wed
+    Network:
+    * Mark Ellis|Worked together at Northline Logistics. Now at Solaris Energy.|An introduction to the team at Solaris
+        FollowUps:
+        * Check in with Mark
+            Schedule: Monthly catch-up|Monthly||2026-11-06
+    * Hannah Brooks|A friend from university, now a PMO lead at a utility company|Advice on PMO roles, and a reference
+        FollowUps:
+        * Check in with Hannah
+            Schedule: Monthly catch-up|Monthly||2026-11-13
+    Conversations:
+    * Catch-up about roles at Solaris|Call|2026-10-06T10:00|[[Solaris Energy]]||Mark will pass my CV to the head of the PMO
+        With:
+        * [[Mark Ellis]]
+        NextSteps:
+        * Send Mark my latest CV
+            DueDate: 2026-10-07
+            Status: Done
+    * Introduction to GreenTalent|Call|2026-10-07T14:00||[[GreenTalent Recruitment]]|Sarah thinks my logistics experience suits grid and tidal projects
+        With:
+        * [[Sarah Khan]]
+    * Update on Tidal Works|Call|2026-10-12T10:00|[[Tidal Works]]|[[GreenTalent Recruitment]]|Tidal Works want a screening call
+        With:
+        * [[Sarah Khan]]
+        NextSteps:
+        * Read up on Tidal Works' projects
+            DueDate: 2026-10-15
+            Status: Done
+    * Advice on the PMO role at GreenGrid|Message|2026-10-13T19:00|[[GreenGrid Networks]]||Hannah says PMO teams care most about portfolio reporting, so use the PMO version of my CV
+        With:
+        * [[Hannah Brooks]]
+    * Feedback from Northwind Power|Email|2026-10-14T16:20|[[Northwind Power]]||Turned down: they wanted someone with offshore wind experience
+    Worries:
+    * Rejections knock my confidence and I stop applying
+        Cause: Years out of the job market, and a rejection already
+        Consequence: Fewer applications, and a longer search
+        RiskType: Emotional
+        Likelihood: 6
+        Severity: 7
+        Controls:
+        * Stick to the routine, whatever the answers|Prevent|60|0
+            Tasks:
+            * Judge the search by the Friday numbers, not by each rejection as it comes
+        * Ask for feedback after every rejection|ReduceImpact|40|0
+        ResidualLikelihood: 4
+        ResidualSeverity: 5
+    * My savings run out before I find a job
+        RiskType: Financial
+        Likelihood: 3
+        Severity: 9
+        FinancialImpact: 3200
+        Controls:
+        * Cut my monthly costs|ReduceImpact|30|0
+            Tasks:
+            * Cancel the subscriptions I do not need
+                DueDate: 2026-10-23
+        * Ask Apex about contract work to bridge the gap|Prevent|50|0
+        ResidualLikelihood: 2
+        ResidualSeverity: 6
+        ResidualFinancialImpact: 3200
+    Routine:
+    * Send one strong application|Search the job boards and send one application that really fits
+        Schedule: Applications|Weekly||2026-10-05
+            On: weekdays
+            DueTime: 9:00 am
+    * Reach out to someone|One message or call to someone in my network or an agent
+        Schedule: Networking|Weekly||2026-10-06
+            On: Tue, Thu
+            DueTime: 2:00 pm
+    * Review the week|Look at the numbers: applications sent, responses and interviews. If the responses are low, change the CV.
+        Schedule: Friday review|Weekly||2026-10-09
+            On: Fri
+            DueTime: 4:00 pm
+    Comments:
+    * The CV works: 3 answers from 4 applications. The best interview came through Mark, so more networking and fewer cold applications.|2026-10-23T16:30

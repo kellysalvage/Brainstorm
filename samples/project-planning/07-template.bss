@@ -1,0 +1,33 @@
+# Project planning, step 7: a reusable template
+
+A project you run more than once can become a template that you, or anyone you share it with, can start again and again. Two things make this work:
+* The `!` marks say which values are part of the plan, and are copied into every new project. Everything else starts blank.
+* Relative dates, such as `+2w`, are turned into real dates counted from the day the project is started.
+
+The only change to the structure is the `!` marks on the names, descriptions and dates of projects and sub-projects. Tickets already copy their names, descriptions and dates, because the built-in TaskItem marks them.
+
+```bss
+t Project|upj
+    A project: what you are delivering, broken down into sub-projects and tickets.
+    s+!                          Name|Project|A short name for the project
+    s!                           Description|Description|What the project will deliver, and why
+    dd!                          StartDate|Starts|When the project starts
+    dd!|(DueDate >= StartDate)   DueDate|Due|When the project should be finished
+    r:tu=me                      Owner|Owner|Who is responsible for the project
+    l:usp                        SubProjects|Sub-projects|The parts of the project
+    l:uti                        Tickets|Tickets|Work that belongs to the whole project
+    l:tcm                        Comments|Comments|Notes and discussion
+
+t SubProject|usp
+    A part of a project, such as a release or a workstream. It can have sub-projects of its own.
+    s+!       Name|Sub-project|A short name for this part of the project
+    s!        Description|Description|What this part delivers
+    l:usp     SubProjects|Sub-projects|Smaller parts of this one
+    l:uti     Tickets|Tickets|The work in this part
+    l:tcm     Comments|Comments|Notes and discussion
+
+x Ticket:TaskItem|uti
+    A piece of work in a project. A big ticket can be broken down into sub-tickets.
+    l:uti     SubTasks|Sub-tickets|Smaller tickets that make up this one
+    l:r:uti   DependsOn|Depends On|Tickets that must be done before this one
+```

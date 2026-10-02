@@ -1,0 +1,18 @@
+# Project planning, step 2: tickets
+
+A ticket is a piece of work. It extends the built-in TaskItem, so every ticket already has a status, a priority, dates, an estimate and someone it is assigned to, and every ticket appears on the kanban board.
+
+The project gets a list of tickets.
+
+```bss
+t Project|upj
+    A project: what you are delivering, broken down into tickets.
+    s+                          Name|Project|A short name for the project
+    s                           Description|Description|What the project will deliver, and why
+    dd                          StartDate|Starts|When the project starts
+    dd|(DueDate >= StartDate)   DueDate|Due|When the project should be finished
+    l:uti                       Tickets|Tickets|The work in the project
+
+x Ticket:TaskItem|uti
+    A piece of work in a project.
+```

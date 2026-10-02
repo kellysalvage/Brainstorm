@@ -1,0 +1,35 @@
+# Website relaunch
+
+A link is the name of a ticket between double square brackets. The login page can not be built until the database is set up and the screen is designed, and the launch announcement waits for the login page. On the kanban board, a ticket that is waiting for others is shown as waiting until they are done.
+
+Project: Website relaunch|A faster, simpler website that works well on phones|2026-10-05|2026-12-18
+    Tickets:
+    * Agree the new site map
+        Status: Done
+    SubProjects:
+    * Design|The look and feel of the new site
+        Tickets:
+        * Design the login screen
+    * Build|Everything needed to run the new site
+        Tickets:
+        * Choose a hosting provider
+            Status: InProgress
+        SubProjects:
+        * Accounts|Signing up and logging in
+            Tickets:
+            * Set up the database
+                DependsOn:
+                * [[Choose a hosting provider]]
+            * Build the login page
+                DependsOn:
+                * [[Set up the database]]
+                * [[Design the login screen]]
+                SubTasks:
+                * Login form
+                * Password reset
+                * Remember me on this device
+    * Launch|Telling people about the new site
+        Tickets:
+        * Write the launch announcement
+            DependsOn:
+            * [[Build the login page]]
