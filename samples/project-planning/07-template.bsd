@@ -1,3 +1,6 @@
+---
+structure: 07-template.bss
+---
 # Website launch template
 
 This is a template, not a project in progress. Its dates are relative: the project starts on the day someone starts it (`+0d`) and is due ten weeks later. When the template is started, every relative date becomes a real one, every ticket starts as ToDo, and every link points to the matching ticket in the new project.

@@ -22,7 +22,7 @@ Video: coming soon.
 
 For each step:
 1. Import the step's `.bss` file as a structure.
-2. Import the step's `.bsd` file as a brainstorm that uses that structure.
+2. Import the step's `.bsd` file. It names the step's structure in its front matter.
 3. Open the brainstorm, and look at the tree, the items and the kanban board.
 
 When you import a later step, choose to replace the brainstorm from the step before.

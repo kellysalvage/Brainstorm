@@ -1,3 +1,6 @@
+---
+structure: 03-deals.bss
+---
 # Sales Q4 2026
 
 Each deal is one line: its name, value, stage and when you expect a decision. The online shop has no stage, so it starts as a Lead.

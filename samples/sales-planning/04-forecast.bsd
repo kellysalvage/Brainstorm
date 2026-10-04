@@ -1,3 +1,6 @@
+---
+structure: 04-forecast.bss
+---
 # Sales Q4 2026
 
 Each deal now ends with its probability. The website redesign is worth 12,000 at a 60% chance, so the app shows its weighted value as 7,200.

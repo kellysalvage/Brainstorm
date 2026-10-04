@@ -21,9 +21,46 @@ t Goal|tg
     s+! Name|Goal|A short name for the goal
 ```
 ````
-Everything outside the `bss` blocks is documentation: headings, explanations, pictures and examples, shown as help in the app. This keeps a structure document readable, and it means a note can never be mistaken for a definition. If a definition contains three backticks, for example in a long description, use four backticks for the fence instead.
+Apart from the front matter at the top (see Versions and change notes), everything outside the `bss` blocks is documentation: headings, explanations, pictures and examples, shown as help in the app. This keeps a structure document readable, and it means a note can never be mistaken for a definition. If a definition contains three backticks, for example in a long description, use four backticks for the fence instead.
 
 Brainstorm documents are not fenced, because they are for everyone. In this README, examples of brainstorm documents are marked `bsd` so that tools can tell the two apart.
+
+### Linking a document to its structure
+Every brainstorm document names its structure at the very top, between two lines of three dashes. This is called front matter, and most Markdown editors understand it and keep it apart from the text. The structure is chosen when the document is created, so the editor can highlight, complete and check the text from the first line.
+```bsd
+---
+structure: fearless-focus.bss
+---
+# Kelly's Fearless Focus plan
+```
+* **A file path** is used for a structure kept as a file. A relative path starts from the folder the document is in.
+* **A web address** is used for a published program. The Brainstorm service checks that the user is allowed to use the program before it sends the structure.
+* **A version** can be added to a web address with `@`, as in `https://brainstorm.app/programs/fearless-focus@3`. The document then stays on that version until the user chooses to update it. A web address without a version always gets the latest version.
+* **`built-in`** uses only the built-in types, such as goals, tasks and risks, for documents that do not need a structure of their own: `structure: built-in`.
+* **A document with no structure**, such as one written in another editor, is read using the built-in types, and flagged so that a structure can be added. If the user does not choose one, the app adds `structure: built-in` to the document's front matter.
+
+### Versions and change notes
+A structure that other people use, such as a published program, changes over time. Its author lists its versions in the structure document's front matter. Each version is written as its number and date, then a colon and a pipe, then the change notes on indented lines below. A note starting with `nb:` tells users something they need to change in their own documents:
+```bss
+---
+versions:
+  1 2026-10-21: |
+    Initial version
+  2 2026-11-01: |
+    Added a Sleep measure to the daily review.
+  3 2027-01-15: |
+    Added a Mood rating to the weekly review.
+    nb: Weight is now called BodyWeight. Write BodyWeight instead of Weight in your plan.
+---
+```
+Front matter is written in YAML, which is what Markdown editors expect. The pipe tells YAML to keep the notes exactly as they are written, so a note can contain a colon, as `nb:` does.
+
+The rules are:
+* Versions are listed oldest first, so a new version is added at the bottom.
+* Version numbers are whole numbers that go up. The highest one is the structure's current version.
+* A program can only be published with a version number higher than the last one published.
+* When a document's structure has a newer version, the app shows the change notes of every version in between, newest first, so a user who skipped several versions sees everything that changed.
+* The app also checks the user's own document against the new version and shows exactly what would be flagged, before the user chooses to update. Authors' notes explain why; the check shows what actually breaks.
 
 ## Brainstorm Structure syntax
 All declarations are made starting with a token defining what is being declared. A complex item with child elements has the child elements listed below the description which is a description of the type itself to be used by the system to help users understand what the type is for. Since description is always first, it does not need a token to define it. All elements must be pre-defined types or types that are defined in the same brainstrom document: the key at the moment is to keep it simple since this is not meant to be a turning complete programming language, just a way to easily define DDD models.
@@ -133,13 +170,13 @@ Most people can not read regular expressions, so when a value does not match, th
 
 Patterns are for experts. To let everyone else use one without reading it, give it a name by extending a simple type. See Extending types.
 
-**Note on regular expressions:** the programming language for the system has not been chosen yet, and regular expressions differ slightly between languages such as Rust and .NET. Until that is decided, patterns should only use features that work the same in both:
+**Note on regular expressions:** patterns can only use these features:
 * character classes such as `[a-z]`, `\d`, `\w` and `\s`
 * the quantifiers `*`, `+`, `?` and `{2,5}`
 * the anchors `^` and `$`
 * groups `( )` and alternation `|`
 
-Avoid lookarounds, such as `(?=...)`, and backreferences, such as `\1`. .NET supports them, but the standard Rust regex library does not.
+Lookarounds, such as `(?=...)`, and backreferences, such as `\1`, are not supported. Leaving them out means a pattern always takes a predictable time to check, however long the value is, and that the same pattern works in other tools that read Brainstorm documents.
 
 #### Conditions
 A condition compares an element with other elements on the same item. It is written as a formula between brackets, and the value should make the condition true. For example, a project that should not end before it starts:
@@ -904,4 +941,4 @@ Do not wrap a short comparison in a function. `(EndDate >= StartDate)` is easier
 A calculation that belongs to one type can already be shared by extending that type, and a rule on a single value can be given a name by extending a simple type. See Extending types. Functions are for the formulas that are left: those used on different elements in different types.
 
 ### Not decided yet
-Functions provided by the system, and functions written in the programming language the system is built with, have not been decided. This depends on the platform, which has not been chosen yet.
+The system is built with C# and .NET. Functions provided by the system, and functions written in C#, have not been decided. They will be added when real structures need them.

@@ -1,3 +1,6 @@
+---
+structure: 04-sub-tickets.bss
+---
 # Website relaunch
 
 Building the login page is too big for one ticket, so it is broken down into three sub-tickets.

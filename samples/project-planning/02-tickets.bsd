@@ -1,3 +1,6 @@
+---
+structure: 02-tickets.bss
+---
 # Website relaunch
 
 Each ticket is one line. A ticket's status decides which column it sits in on the kanban board: tickets with no status start as ToDo.

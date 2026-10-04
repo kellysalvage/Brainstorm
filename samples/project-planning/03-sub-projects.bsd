@@ -1,3 +1,6 @@
+---
+structure: 03-sub-projects.bss
+---
 # Website relaunch
 
 The tickets are now grouped into three sub-projects. Build has a sub-project of its own, Accounts. On the kanban board, selecting a sub-project shows only its tickets, and selecting the project shows them all.

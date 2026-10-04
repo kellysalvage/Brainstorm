@@ -1,3 +1,6 @@
+---
+structure: 05-dependencies.bss
+---
 # Website relaunch
 
 A link is the name of a ticket between double square brackets. The login page can not be built until the database is set up and the screen is designed, and the launch announcement waits for the login page. On the kanban board, a ticket that is waiting for others is shown as waiting until they are done.

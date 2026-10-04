@@ -1,3 +1,6 @@
+---
+structure: 01-project.bss
+---
 # Website relaunch
 
 The whole project fits on one line: its name, description, start date and due date, in the order the structure declares them.

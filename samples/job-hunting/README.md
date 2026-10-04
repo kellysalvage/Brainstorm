@@ -25,10 +25,10 @@ Each file is the complete search at the end of that episode, so comparing two ep
 ## Following along
 
 1. Import `job-hunting.bss` as a structure.
-2. Import an episode's `.bsd` file as a brainstorm that uses that structure, in the default import mode, so that the contacts are created for you.
+2. Import an episode's `.bsd` file in the default import mode, so that the contacts are created for you. It names `job-hunting.bss` as its structure in its front matter.
 3. Open the brainstorm, and look at the companies, the conversations, your tasks and the numbers on the search.
 
-To run your own search, import the structure and write your own document, starting with the line from episode 1.
+To run your own search, create a new brainstorm that uses the structure, and start with the line from episode 1.
 
 The CVs and cover letters linked in the episodes are examples and are not included in this repository.
 

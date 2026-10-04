@@ -1,3 +1,6 @@
+---
+structure: 06-activities.bss
+---
 # Sales Q4 2026
 
 Each activity is one line: what it was about, the kind, the date and the outcome. The person is left empty, so it is whoever imports the document. The last activity has no date either, so it is recorded as happening now.

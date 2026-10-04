@@ -22,7 +22,7 @@ Video: coming soon.
 
 For each step:
 1. Import the step's `.bss` file as a structure.
-2. Import the step's `.bsd` file as a brainstorm that uses that structure, in the default import mode, so that the contacts are created for you.
+2. Import the step's `.bsd` file in the default import mode, so that the contacts are created for you. It names the step's structure in its front matter.
 3. Open the brainstorm, and look at the clients, the deals and "My tasks".
 
 When you import a later step, choose to replace the brainstorm from the step before.

@@ -1,3 +1,6 @@
+---
+structure: 06-comments.bss
+---
 # Website relaunch
 
 Comments are added under any item. Most are a single line: the date and the author are filled in automatically. A comment can also give its date after the text, separated by a pipe.
