@@ -15,10 +15,8 @@ Everything in the book hangs off one plan. In the app, the plan is the top of th
 
 ```bss
 t FocusPlan|ufp
-    """
-    Your Fearless Focus plan: where you are now, who you want to be, what you want and why,
-    what stands in your way, and the daily and weekly habits that keep you moving.
-    """
+    > Your Fearless Focus plan: where you are now, who you want to be, what you want and why,
+    > what stands in your way, and the daily and weekly habits that keep you moving.
     s+!     Name|Plan|A name for your plan, e.g. "My Fearless Focus plan"
     s       WhoIWantToBe|Who I Want To Be|The kind of person you want to become. Your goals should move you towards this person.
     ufa     Affirmation|Focus Affirmation|The one statement you practise every day
@@ -47,11 +45,11 @@ c GoalStatus
     LaidToRest
 
 x FocusGoal:Goal|ufg
-    A goal you have made your own: you know why you want it, how it will feel, and whether you will pursue it or lay it to rest.
-    GoalStatus=Active  Status|Status|Active, on hold, achieved, or laid to rest by a conscious decision
-    b                  ForSomeoneElse|For Someone Else|True if you want this mainly to please or impress someone else. Consider replacing it with a goal you really want.
-    s                  Feeling|How It Will Feel|How you will feel when you have achieved it. If it does not excite you, it may not be the right goal.
-    l:uac              Actions|Actions|The actions that move you towards the goal. An action with a schedule is a regular habit.
+    > A goal you have made your own: you know why you want it, how it will feel, and whether you will pursue it or lay it to rest.
+    GoalStatus=Active                                Status|Status|Active, on hold, achieved, or laid to rest by a conscious decision
+    b|(not ForSomeoneElse or Status = LaidToRest)    ForSomeoneElse|For Someone Else|True if you want this mainly to please or impress someone else. Consider replacing it with a goal you really want.
+    s                                                Feeling|How It Will Feel|How you will feel when you have achieved it. If it does not excite you, it may not be the right goal.
+    l:uac                                            Actions|Actions|The actions that move you towards the goal. An action with a schedule is a regular habit.
 ```
 
 A goal's actions are Actions (see below), so every action can say what outcome you expect from it.
@@ -62,7 +60,7 @@ Chapter 9 asks you to say, for every action, what outcome you expect and how you
 
 ```bss
 x Action:TaskItem|uac
-    An action towards a goal, with the outcome you expect, so that you can tell whether it worked.
+    > An action towards a goal, with the outcome you expect, so that you can tell whether it worked.
     s!      ExpectedOutcome|Expected Outcome|What should happen if this action works
     s!      Measure|How To Measure|How you will measure the outcome
     dd!     OutcomeBy|Outcome Expected By|When you expect to see the outcome. Can be relative, e.g. +2w.
@@ -81,7 +79,7 @@ c RiskSource
     OthersDoubt
 
 x FocusRisk:Risk|ufr
-    A fear, obstacle or doubt that stands between you and a goal, measured so that it can be faced.
+    > A fear, obstacle or doubt that stands between you and a goal, measured so that it can be faced.
     RiskSource+!                                            Source|Source|A fear, a practical obstacle, or a doubt someone else has raised
     s                                                       WhyItMatters|Why It Would Be So Bad|Why you rated its severity as you did. Ask "really?" until you reach the real reason.
     n|0..                                                   ExpectedSuffering|Expected Suffering (months)|If you can not rate the severity: how long you expect to suffer if it happens
@@ -97,13 +95,13 @@ Chapter 6 builds a vision board you see every day, and chapter 7 merges two or t
 
 ```bss
 t VisionBoard|uvb
-    What you want your life to look like, kept somewhere you will see it every day.
+    > What you want your life to look like, kept somewhere you will see it every day.
     s+      Name|Vision|A name for your vision
     l:img   Pictures|What I See|The things, places, people and lifestyle you want in your life
     l:tcm   Comments|Comments|Notes about your vision
 
 t FocusAffirmation|ufa
-    One short, powerful statement made from the two or three affirmations that resonate most with you.
+    > One short, powerful statement made from the two or three affirmations that resonate most with you.
     s+      Name|Affirmation|Your focus affirmation, short enough to remember
     l:s     Sources|Built From|The affirmations you merged to make it
     l:tcm   Comments|Comments|Notes about your affirmation, such as what your inner critic says
@@ -115,7 +113,7 @@ Chapters 10 and 11 set up an evening review and a weekly planning session. Each 
 
 ```bss
 t DailyReview|udr
-    Your evening review: what you did, how it went, how you felt and what you are grateful for.
+    > Your evening review: what you did, how it went, how you felt and what you are grateful for.
     s+!     Name|Review|e.g. "Evening review". Each day's copy gets the date added.
     s!!     Guide|How To Review|Guidance from the program on how to do your review
     ts      Schedule|Repeats|Usually every evening
@@ -129,7 +127,7 @@ t DailyReview|udr
     l:tcm   Comments|Comments|Notes about the day
 
 t WeeklyReview|uwr
-    Your weekly planning session: look back at the week, measure your progress, and plan the week ahead.
+    > Your weekly planning session: look back at the week, measure your progress, and plan the week ahead.
     s+!     Name|Review|e.g. "Weekly planning". Each week's copy gets the date added.
     s!!     Guide|How To Review|Guidance from the program on how to do your weekly planning
     ts      Schedule|Repeats|Usually once a week

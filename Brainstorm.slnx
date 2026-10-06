@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Brainstorm.Cli/Brainstorm.Cli.csproj" />
+    <Project Path="src/Brainstorm.Language/Brainstorm.Language.csproj" />
+    <Project Path="src/Brainstorm.Programs/Brainstorm.Programs.csproj" />
+    <Project Path="src/Brainstorm.Web.Client/Brainstorm.Web.Client.csproj" />
+    <Project Path="src/Brainstorm.Web/Brainstorm.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Brainstorm.Language.Tests/Brainstorm.Language.Tests.csproj" />
+    <Project Path="tests/Brainstorm.Programs.Tests/Brainstorm.Programs.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -12,7 +12,7 @@ c DealStage
     Lost
 
 t SalesPlan|usl
-    A sales plan for a period: what you aim to sell, and who you will sell it to.
+    > A sales plan for a period: what you aim to sell, and who you will sell it to.
     s+                          Name|Plan|e.g. "Sales Q4 2026"
     dd                          StartDate|Starts|The first day of the period
     dd|(EndDate >= StartDate)   EndDate|Ends|The last day of the period
@@ -20,13 +20,13 @@ t SalesPlan|usl
     l:ucl                       Clients|Clients|The people and companies you are selling to
 
 t Client|ucl
-    A person or company you are selling to.
+    > A person or company you are selling to.
     s+        Name|Client|The client's name
     r:tc      MainContact|Main Contact|The person you deal with
     l:udl     Deals|Deals|What you hope to sell them
 
 t Deal|udl
-    Something you hope to sell to a client.
+    > Something you hope to sell to a client.
     s+                Name|Deal|e.g. "Website redesign"
     n+|0..            Value|Value|What the deal is worth
     DealStage=Lead    Stage|Stage|How far the deal has got

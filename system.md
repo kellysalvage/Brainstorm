@@ -2,7 +2,7 @@
 
 This document describes the parts of the Brainstorm system and how they fit together. The language is defined in README.md, and the product vision and roadmap are in MyVision.md.
 
-The system has four layers:
+The system has five layers:
 * **Language core**: turns text into data and data back into text. Every client and the server use it.
 * **Programs and repetition**: copies plans and runs schedules.
 * **Brainstorm service**: the central server that stores, imports, publishes and serves brainstorms.
@@ -31,19 +31,67 @@ Pages choose how they are rendered:
 
 Patterns are run with `RegexOptions.NonBacktracking`. Patterns are written by users, and this engine always finishes in linear time, so a badly written pattern can not hang the system. It does not support lookarounds or backreferences, which the language already leaves out.
 
+## Projects
+All the code is in one solution, `Brainstorm.slnx`.
+
+```
+Brainstorm.slnx
+src/
+  Brainstorm.Language/        the language core
+  Brainstorm.Programs/        programs and repetition
+  Brainstorm.Web/             the Brainstorm service and server-rendered pages
+  Brainstorm.Web.Client/      pages that run in the browser
+  Brainstorm.Cli/             the command line tool
+tests/
+  Brainstorm.Language.Tests/
+  Brainstorm.Programs.Tests/
+samples/                      test documents for the language core
+```
+
+| Assembly | Components | Uses |
+|---|---|---|
+| Brainstorm.Language | Structure parser, structure model, document parser, brainstorm model, validator, formula engine, link resolver, document writer, upgrade check | A YAML reader only |
+| Brainstorm.Programs | Copy engine, scheduler | Language, Ical.Net |
+| Brainstorm.Web | Accounts, storage, sign in, program versions, import and export, My tasks, program publishing, program pages, the phone app. Later the AI tools, chat and MCP server | Language, Programs, Web.Client, EF Core with PostgreSQL |
+| Brainstorm.Web.Client | Text editor, structured views, program updates, Copy for AI | Language |
+| Brainstorm.Cli | Command line tool | Language |
+
+How the code is split:
+* The language core has no UI, database or network code, so it can run on the server, in the browser, in the command line tool and later in a language server. When it needs something from outside, such as the users and contacts the link resolver looks up, it asks through an interface that the service provides.
+* Inside an assembly, each component is a folder and a namespace, such as `Brainstorm.Language.Structures`. A component only becomes its own assembly when something needs it without the rest.
+* Programs are separate from the language core because only the server runs them, and Ical.Net does not need to be downloaded to the browser.
+* Blazor requires pages that run in WebAssembly to be in their own project, which is `Brainstorm.Web.Client`. Everything else on the web is in `Brainstorm.Web`.
+* The service stays inside the web project until it needs to be split, for example if the MCP server has to run on its own.
+* The phone app is the My tasks pages of the web project, installed from the browser. It only gets its own project if it becomes a native app.
+
 ## Language core
 
 ### Structure parser
 Reads a `.bss` Markdown document. Versions and change notes are read from the YAML front matter, and definitions only from `bss` fences. Everything else is kept as help text. Produces the raw definitions of types, extensions, choices and functions, and the list of versions.
 
 ### Structure model
-Turns the raw definitions into a `StructureDefinition`. It resolves names and aliases, adds the built-in types and choices, applies extensions, and reads marks (`+`, `!`, `!!`), rules, defaults and formulas. It reports problems in the structure itself, such as unknown types, formulas that depend on themselves, functions that call themselves, and defaults that break their rules.
+Turns the raw definitions into a `StructureDefinition`, which holds:
+* **Types**: name, alias, description, the type they extend, and their elements in declared order, which shorthand depends on.
+* **Elements**: name, caption, description, type, marks, default, formula and rules.
+* **Choices**: name, description, and values with a name, caption and description.
+* **Functions**: return type, name, parameters, description and formula.
+
+Structures never generate code: every brainstorm is held in the same generic classes, shaped by these definitions. The structure model resolves names and aliases, adds the built-in types and choices, applies extensions, and reads marks (`+`, `!`, `!!`), rules, defaults and formulas. It reports problems in the structure itself, such as unknown types, formulas that depend on themselves, functions that call themselves, and defaults that break their rules.
 
 ### Document parser
 Reads the front matter of a `.bsd` document to find its structure, then reads the rest using a `StructureDefinition`. It recognises sections, notes, items, shorthand, lists, list item types, media, relative dates and links. It never fails: a value it can not understand is kept as written and flagged.
 
 ### Brainstorm model
-The in-memory representation of a brainstorm that every other component works on: sections, notes, items, elements, lists, complex values, links and raw values that could not be understood. Each item has an internal id, so links survive renaming.
+The in-memory representation of a brainstorm that every other component works on: its structure, sections, notes and root items. Each item has an internal id, so links survive renaming, and the line it came from, so flags can point to it.
+
+An item's elements are a dictionary keyed by element name, ignoring case. Each value keeps:
+* the raw text, exactly as written;
+* the parsed value, or nothing when the text could not be understood;
+* the element's definition, or nothing when the type has no such element.
+
+A value that could not be understood and an element the type does not have are the same case at two levels, and both keep their raw text. An unknown element also keeps the lines indented below it. So nothing written is ever lost, and an element renamed by a new structure version still holds its old value.
+
+Tags are found in the raw text when they are needed, so they are not stored separately.
 
 ### Validator
 Checks a brainstorm model against its structure: expected values, ranges, patterns, conditions, mistyped types and calculated values written in a document. It checks at three levels:
@@ -58,7 +106,7 @@ Works out calculated values and conditions, including totals over lists (`sum`, 
 Turns `[[names]]` into internal ids on import, and back into current names on export. It flags missing, ambiguous and circular links, and finds users and contacts the importing user has access to.
 
 ### Document writer
-Turns a brainstorm model back into `.bsd` text, including its front matter. Links are written with current names, and calculated values are left out. The same model always gives the same text.
+Turns a brainstorm model back into `.bsd` text, including its front matter. Links are written with current names, and calculated values are left out. Known elements are written in their declared order, followed by unknown elements in the order they were written. The same model always gives the same text.
 
 ### Upgrade check
 Parses a document with its current structure version and with a newer one, and lists the flags that the newer version would add. This shows a user exactly what an update would break in their own document.
@@ -100,6 +148,7 @@ Publishes a free program as a link. A program is a structure and a brainstorm wi
 For desktops and tablets, with nothing to install.
 * A "My Brainstorms" sidebar that collapses when a brainstorm opens.
 * A tree of the brainstorm's sections and items on the left.
+* Filters by text and tags, each belonging to the view it is in. The tree's filter keeps an item visible when it or anything below it matches. An item opened from the tree shows all its children, unless its own list of children is filtered. The kanban board has its own filter. Filtering is done in the client.
 * A main view split into the list of items under the selected tree node and the selected item.
 * Tabs for the main view, a kanban board of all tasks under the selected item, and the full document.
 * Views generated from the structure: simple lists as plain lists, lists of complex items as grids, and a form for an item opened from a grid. This is recursive.
@@ -112,7 +161,7 @@ Edits `.bss` and `.bsd` documents with syntax highlighting, flags, completion, a
 When a newer version of a document's structure exists, the client downloads every version in between and shows their change notes together, newest first. It runs the upgrade check on the user's document and shows what would be flagged. The user chooses whether to update, and updating changes the version in the document's front matter.
 
 ### Phone app
-An installable web app that shows "My tasks", and read-only views of the brainstorms those tasks belong to, such as a risk assessment, for context. It is not for writing documents, and it does not sell programs.
+An installable web app that shows "My tasks", with its own filter by text and tags, and read-only views of the brainstorms those tasks belong to, such as a risk assessment, for context. It is not for writing documents, and it does not sell programs.
 
 ## AI
 Most people will get the most from AI by giving it a structure and their goals, and asking it to write a brainstorm document. The rest of this section supports that first, then lets AI work inside the system.

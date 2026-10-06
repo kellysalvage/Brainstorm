@@ -8,7 +8,7 @@ The project also gets an owner, a link to a user that defaults to `me`: whoever 
 
 ```bss
 t Project|upj
-    A project: what you are delivering, broken down into sub-projects and tickets.
+    > A project: what you are delivering, broken down into sub-projects and tickets.
     s+                          Name|Project|A short name for the project
     s                           Description|Description|What the project will deliver, and why
     dd                          StartDate|Starts|When the project starts
@@ -19,7 +19,7 @@ t Project|upj
     l:tcm                       Comments|Comments|Notes and discussion
 
 t SubProject|usp
-    A part of a project, such as a release or a workstream. It can have sub-projects of its own.
+    > A part of a project, such as a release or a workstream. It can have sub-projects of its own.
     s+        Name|Sub-project|A short name for this part of the project
     s         Description|Description|What this part delivers
     l:usp     SubProjects|Sub-projects|Smaller parts of this one
@@ -27,7 +27,7 @@ t SubProject|usp
     l:tcm     Comments|Comments|Notes and discussion
 
 x Ticket:TaskItem|uti
-    A piece of work in a project. A big ticket can be broken down into sub-tickets.
+    > A piece of work in a project. A big ticket can be broken down into sub-tickets.
     l:uti     SubTasks|Sub-tickets|Smaller tickets that make up this one
     l:r:uti   DependsOn|Depends On|Tickets that must be done before this one
 ```

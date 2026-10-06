@@ -10,10 +10,8 @@ The search is the top of the tree. It knows how long your savings will last, and
 
 ```bss
 t JobSearch|ujs
-    """
-    Your job search: the job you want, how long your money will last, the companies and agents
-    you are working with, and everyone you have spoken to.
-    """
+    > Your job search: the job you want, how long your money will last, the companies and agents
+    > you are working with, and everyone you have spoken to.
     s+                               Name|Search|e.g. "My next project manager role"
     s+                               TargetRole|Target Role|The job you are looking for
     n|0..                            TargetSalary|Target Salary|The salary you are aiming for
@@ -53,7 +51,7 @@ c ApplicationStage
     Withdrawn
 
 t Company|ucy
-    A company you are interested in or have applied to.
+    > A company you are interested in or have applied to.
     s+        Name|Company|The company's name
     s         Sector|Sector|What the company does
     s         Website|Website|The company's website or careers page
@@ -61,7 +59,7 @@ t Company|ucy
     l:tcm     Comments|Comments|Notes about the company
 
 t Application|uap
-    A job you are interested in or have applied for.
+    > A job you are interested in or have applied for.
     s+                          Name|Role|The job title
     ApplicationStage=Interested Stage|Stage|How far the application has got
     dd                          AppliedOn|Applied On|When you applied
@@ -85,7 +83,7 @@ c InterviewFormat
     InPerson
 
 t Interview|uiv
-    An interview for a job.
+    > An interview for a job.
     s+                  Name|Interview|e.g. "First interview"
     d                   Date|Date|When the interview is
     InterviewFormat=Video   Format|Format|Phone, video or in person
@@ -102,7 +100,7 @@ Recruitment agents and the people you know are how many jobs are found. Each age
 
 ```bss
 t Agent|uag
-    A recruitment agency that is looking for jobs for you.
+    > A recruitment agency that is looking for jobs for you.
     s+        Name|Agency|The agency's name
     r:tc      Recruiter|Recruiter|The person you deal with
     s         LookingFor|Looking For|What they are looking for on your behalf
@@ -110,7 +108,7 @@ t Agent|uag
     l:tcm     Comments|Comments|Notes about the agent
 
 t Connection|ucn
-    Someone you know who could help you find a job.
+    > Someone you know who could help you find a job.
     s+        Name|Name|Their name
     s         HowWeKnow|How We Know Each Other|e.g. "Worked together at Northline Logistics"
     s         CanHelpWith|Can Help With|Introductions, advice, or a reference
@@ -130,7 +128,7 @@ c ConversationType
     Message
 
 t Conversation|ucv
-    A call, email, meeting or message about your job search.
+    > A call, email, meeting or message about your job search.
     s+                     Name|About|What the conversation was about
     ConversationType=Call  Kind|Kind|Call, email, meeting or message
     d=now                  Date|Date|When it happened

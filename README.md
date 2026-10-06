@@ -17,11 +17,11 @@ In a structure document, types, choices and functions are only read from code bl
 ````
 ```bss
 t Goal|tg
-    Something you want to achieve.
+    > Something you want to achieve.
     s+! Name|Goal|A short name for the goal
 ```
 ````
-Apart from the front matter at the top (see Versions and change notes), everything outside the `bss` blocks is documentation: headings, explanations, pictures and examples, shown as help in the app. This keeps a structure document readable, and it means a note can never be mistaken for a definition. If a definition contains three backticks, for example in a long description, use four backticks for the fence instead.
+Apart from the front matter at the top (see Versions and change notes), everything outside the `bss` blocks is documentation: headings, explanations, pictures and examples, shown as help in the app. This keeps a structure document readable, and it means a note can never be mistaken for a definition. If a definition contains three backticks, for example in a description, use four backticks for the fence instead.
 
 Brainstorm documents are not fenced, because they are for everyone. In this README, examples of brainstorm documents are marked `bsd` so that tools can tell the two apart.
 
@@ -63,13 +63,13 @@ The rules are:
 * The app also checks the user's own document against the new version and shows exactly what would be flagged, before the user chooses to update. Authors' notes explain why; the check shows what actually breaks.
 
 ## Brainstorm Structure syntax
-All declarations are made starting with a token defining what is being declared. A complex item with child elements has the child elements listed below the description which is a description of the type itself to be used by the system to help users understand what the type is for. Since description is always first, it does not need a token to define it. All elements must be pre-defined types or types that are defined in the same brainstrom document: the key at the moment is to keep it simple since this is not meant to be a turning complete programming language, just a way to easily define DDD models.
+All declarations are made starting with a token defining what is being declared. A complex item with child elements has the child elements listed below its description, which explains what the type is for and is shown to users as help. Description lines start with `>`, so they never look like elements (see Descriptions). All elements must be pre-defined types or types that are defined in the same brainstrom document: the key at the moment is to keep it simple since this is not meant to be a turning complete programming language, just a way to easily define DDD models.
 
 ### Declaring a type
-A type is declared with a line starting with t, followed by a space thn the name of the type, a pipe | and the alias. After the declaration the next line contains a description of the type.After the description, the elements of the type are listed with one per line. Each element consists of the alias or name, followed by a space, the name of the element, an optional caption and and optional description. These elements are used for quickly generating UI representations of items and for describing items in brainstorm document hints. The use of squere brackets indicates that the part of the element definition is optional. E.G.
+A type is declared with a line starting with t, followed by a space thn the name of the type, a pipe | and the alias. The alias is required. For a type that should always be written in full, make the alias the same as the name, as in `t Recipe|Recipe`. The lines after the declaration that start with `>` describe the type. After the description, the elements of the type are listed with one per line. Each element consists of the alias or name, followed by a space, the name of the element, an optional caption and and optional description. These elements are used for quickly generating UI representations of items and for describing items in brainstorm document hints. The use of squere brackets indicates that the part of the element definition is optional. E.G.
 ```
 t name|alias
-    this is a description of the type for use by the system to display help and tips. 
+    > this is a description of the type for use by the system to display help and tips. 
     s!! Name|Name|Name must always be after the description.
     i IntegerPropertyName[|Caption][|InetegerPropertyDescription]
     d DateTimeProperty[|Caption]|[DateTimePropertyDescription]
@@ -90,27 +90,26 @@ By convention, built in simple types have a single character alias (except the m
 More formally, we have:
 ```
 t TypeName|alias
-    [description]
+    [> description]*
     s[+][!|!!][=default][|rule]* Name[|caption][|description]
     [alias|typeName[+][!|!!][=default][|rule]* elementName[|caption][|description]]*
     [alias|typeName=(formula)[|rule]* elementName[|caption][|description]]*
 ```
 You will notice that for most of the elements there are two MyThing properties: this is because each element is created with a name and an alias. Aliases allow you to create shortcut names to make producing a brainstorm structure document eaier.
 
-### Long descriptions
-A type description is normally a single line. To write a longer description, start it with a line containing only `"""` and end it with another line containing only `"""`. Everything between the two lines is the description and can use full markdown, such as bold text, lists and paragraphs. The indentation of the opening `"""` is removed from every line of the description, so the text is read as if it started at the left margin. For example:
+### Descriptions
+A description is written straight after the declaration, on lines starting with `>`. This is how Markdown marks a quote, and it keeps the description apart from the elements below it. A description can run over several lines, each starting with `>`, and can use full Markdown, such as bold text, lists and paragraphs. A line with only `>` separates two paragraphs. For example:
 ```bss
 t LifeCheck|ulc
-    """
-    A regular check of my **health, weight and wealth**.
-
-    Use this when you want to:
-    * track a few numbers each month
-    * compare them against earlier months
-    """
+    > A regular check of my **health, weight and wealth**.
+    >
+    > Use this when you want to:
+    > * track a few numbers each month
+    > * compare them against earlier months
     s! Name|Name|What this check is called
     n Weight|Weight (kg)|My weight on the day
 ```
+Types, extensions, choices and functions are all described this way. The description is shown as help wherever the declaration is used, in the editor and in the app. A type, extension or function without a description is flagged. A choice's description is optional.
 
 ### Templated and read-only elements
 An element is marked as templated by putting `!` straight after its alias or type name, e.g. `s! Name`. Templated elements are the plan. They are copied whenever the item is copied, either on a scheduled date or when someone starts a program. All other elements are the record, and they start blank, or with their default value, in every copy.
@@ -187,6 +186,13 @@ dd|(EndDate >= StartDate) EndDate|Ends|When the project ends, on or after the da
 A condition can use everything a calculated value can (see Calculated values), plus:
 * the comparisons `=`, `!=`, `<`, `<=`, `>` and `>=`
 * `and` and `or`, to combine comparisons
+* `not`, for the opposite of a comparison, a true or false element, or a function that gives true or false
+
+A true or false element can be a condition on its own, and `not` turns it round. For example, a goal that you want mainly to please someone else is pointed out, until you lay it to rest:
+```bss
+b|(not ForSomeoneElse or Status = LaidToRest)    ForSomeoneElse|For Someone Else|True if you want this mainly to please or impress someone else
+```
+`not` applies to the comparison straight after it, so `not Stage = Won and Value > 100` means "the stage is not Won, and the value is over 100". `and` is worked out before `or`. Use brackets when that is not what you mean.
 
 When a choice is compared with a name, as in `Stage = Won`, the name is read as one of the choice's values. This holds even if an element has the same name, so a total called Won can still count the deals whose stage is Won.
 
@@ -202,7 +208,7 @@ c ProjectRiskType
     Legal
 
 t ProjectRisk|upr
-    The possibility that an action, event or decision leads to a bad outcome, and what it would cost.
+    > The possibility that an action, event or decision leads to a bad outcome, and what it would cost.
     s+!                           Name|Name|A short name for the risk
     i|0..100                      Likelihood|Likelihood (%)|How likely the risk is to happen, from 0 to 100%
     n|0..                         Impact|Impact|What it would cost if it happened
@@ -282,16 +288,24 @@ The rules for default values are:
 Built in types are the framework for creaing and defining the structures you want to work with. They can not be modified, but they can be extended (see below). These types provide data essential for some of the built-in services in the system such as user logins, contact details and task management. These types often need no modification to use and often are not to be used in Brainstorm documents. For example, the user that is set for a tasks owner or creator will be the user that imports the document.
 
 ### Choices
-A choice is a list of text values that are tied to a named choice. For example, we could have a choice called Months that allow a user to select from a list of dates. Choices are defined as follows:
+A choice is a named list of values, such as the months of the year. Choices are defined as follows:
 ```
-c choiceName
-    [choiceValue]*
+c ChoiceName
+    [> description]*
+    [valueName[|caption][|description]]*
 ```
-Because many scenarios have a large number of choice-style values, choices do not support aliases and must be explicitly named. 
+Each value is a name, and follows the name rules. Like an element, it can have a caption and a description:
+* The caption is what the app shows, for example in a drop-down list. Without one, the name is shown.
+* The description is shown as help, for example when the editor offers the value.
+
+In a brainstorm document, a value can be written as its name or its caption, in any case, so `Status: InProgress` and `Status: in progress` mean the same thing. When a brainstorm is written out as a document, the name is used. Formulas and conditions always use the name.
+
+Choices do not have aliases, because they are written in full in documents.
 
 To define the Months choice for example, we have the following:
 ```bss
 c Months
+    > The months of the year
     Jan
     Feb
     Mar
@@ -308,40 +322,42 @@ c Months
 Using a choice in a type is simple:
 ```bss
 t MyType|umt
-    An example type that offers a chice of Months
+    > An example type that offers a chice of Months
     Months TheMonth|The Month|The month selected for fun
 ```
 
 ### Built-in simple types
 The following types are built in and the names are reserved:
 * t Integer|i
-    A whole number
+    > A whole number
 * t DateTime|d
-    A date and time
+    > A date and time, such as 2026-10-05T14:00 or 2026-10-05 2:00 pm
 * t Time|dt
-    A time only date object
+    > A time of day, such as 14:00 or 2:00 pm
 * t Date|dd
-    A date only date object
+    > A date, such as 2026-10-05
 * t String|s
-    Text value
+    > Text value
 * t Decimal|n
-    A decmal number with a whole and fractional component expressed in decimal places
+    > A decmal number with a whole and fractional component expressed in decimal places
 * t Boolean|b
-    A true or false value: items of this type are either true or false. Missing values are assumed to be false
+    > A true or false value, written `true` or `false` in any case. A missing value is false.
 * t Image|img
-    A picture, such as a photo on a vision board
+    > A picture, such as a photo on a vision board
 * t Audio|aud
-    A sound recording, such as a guided meditation
+    > A sound recording, such as a guided meditation
 * t Video|vid
-    A video, such as a lesson in a program
+    > A video, such as a lesson in a program
 * t File|file
-    Any other file, such as a PDF worksheet
+    > Any other file, such as a PDF worksheet
+
+Dates are written year first, as in `2026-10-05`. This is the international standard (ISO 8601) used on the internet, and it means the same day in every country. The app shows dates in each user's own format.
 
 ### Media
 Images, audio, video and other files are written the Markdown way. An image uses an exclamation mark, and everything else is written as a link. The text in square brackets is the caption, which is also used as alternative text for people who can not see or hear the media:
 ```bss
 t Lesson|ul
-    One lesson in a course.
+    > One lesson in a course.
     s+!     Name|Lesson|The title of the lesson
     vid!!   Video|Video|The lesson itself
     aud!!   Meditation|Guided Meditation|A short practice to finish the lesson
@@ -362,15 +378,15 @@ The file can be one that has been uploaded to Brainstorm, or a link to a file el
 
 ### Built-in complex types
 * t List<T>|l:x
-    A generic list of objects where x is the name or alias of the objects that the list holds
+    > A generic list of objects where x is the name or alias of the objects that the list holds
 * t Reference<T>|r:x
-    A link to an item of type x that lives somewhere else in the brainstorm, such as a ticket that another ticket depends on. A list of links is written `l:r:x`. See Links.
+    > A link to an item of type x that lives somewhere else in the brainstorm, such as a ticket that another ticket depends on. A list of links is written `l:r:x`. See Links.
 * t TaskItem|tt
-    A task object that we can use in kanban boards
+    > A task object that we can use in kanban boards
 **Definition**
 ```bss
 t TaskItem|tt
-    A TaskItem is anything that needs to have action taken to implement some desired outcome. This can be used in a todo list, a list of things that must be done to get controls in place for a risk, a projects kanban board, etc.    
+    > A TaskItem is anything that needs to have action taken to implement some desired outcome. This can be used in a todo list, a list of things that must be done to get controls in place for a risk, a projects kanban board, etc.    
     s!!+ Name|Task Name|A short name to identify the task without a full description
     s!+ Description|Description|A full description of what the task entails, what needs to be done and any other information pertinent to the execution and completion of the task
     d CreatedDate|Created Date|The date and time the task was created
@@ -389,39 +405,39 @@ t TaskItem|tt
 ```
 StartDate and DueDate are templated so that relative dates, such as `+2d`, are carried into copies. Any task with a Schedule repeats, wherever it is. See Repeating items.
 * t Contact|tc
-    A contact with contact details such as a phone number, email address, etc. 
+    > A contact with contact details such as a phone number, email address, etc. 
     **Definition**
 ```bss
 t contact|tc
-    An contact is a party that has contact details
+    > An contact is a party that has contact details
     s Name|Name|The first name of the contact 
-    s Surname|The surname of the contact
+    s Surname|Surname|The surname of the contact
     s CompanyName|The name of the company if the contact is a contact person in a company
     l:tcm Comments|Comments|Optional. Notes about the contact
 ```
 * t ContactDetail|tcd
-    A single detaial about a contact, for example, the phone number or email address.
+    > A single detaial about a contact, for example, the phone number or email address.
     ContactDetailType Type|Contact Detail Type|One of the predefined contact types in the ContactDetailType choice.
     s Name|Label|An optional note such as "home" or "after hours"
     s Value|Value|The actual contact detail value
-    public bool IsPrimary|Is Primary|The one to use first when there is more than one of this type.
+    b IsPrimary|Is Primary|The one to use first when there is more than one of this type.
 * t User|tu
-    Another user of the system which also has contact details.
+    > Another user of the system which also has contact details.
     **Definition**
 ```bss
- t User|tu
-    A user of the system
+t User|tu
+    > A user of the system
     s Name|Login|The user login name (usually an email address)
-    cu Contact|Contact|The person or party that the user represents    
-    dt CreatedOn|Created On|The date the user record was created
+    tc Contact|Contact|The person or party that the user represents    
+    dd CreatedOn|Created On|The date the user record was created
     b IsActive|Is Active|True if the user is actively using the system.
 ```
 * t Goal|tg
-    Something you want to achieve, why you want it, and what stands in the way.
+    > Something you want to achieve, why you want it, and what stands in the way.
     **Definition**
 ```bss
 t Goal|tg
-    Something you want to achieve, why you want it, and what stands in the way.
+    > Something you want to achieve, why you want it, and what stands in the way.
     s+!      Name|Goal|A short name for the goal
     s!       Description|Description|What achieving this goal looks like
     dd!      TargetDate|Target Date|When you want to have achieved it
@@ -434,11 +450,11 @@ t Goal|tg
     l:tcm    Comments|Comments|Optional. Your thoughts about the goal, kept apart from its description
 ```
 * t Milestone|tm
-    A measurable point on the way to a goal.
+    > A measurable point on the way to a goal.
     **Definition**
 ```bss
 t Milestone|tm
-    A measurable point on the way to a goal.
+    > A measurable point on the way to a goal.
     s+!      Name|Milestone|What will be true when you reach it
     dd!      TargetDate|Target Date|When you want to reach it
     s!       Measure|Measure|What you measure, e.g. body fat (%)
@@ -447,11 +463,11 @@ t Milestone|tm
     l:tcm    Comments|Comments|Optional. Notes about the milestone, such as how you reached it
 ```
 * t Risk|tr
-    Something that could stop you or hurt you. A risk is rated twice: as it is now, and as it will be once its controls are in place. Controls often overlap, so the remaining risk is rated by judgement rather than worked out from the controls.
+    > Something that could stop you or hurt you. A risk is rated twice: as it is now, and as it will be once its controls are in place. Controls often overlap, so the remaining risk is rated by judgement rather than worked out from the controls.
     **Definition**
 ```bss
 t Risk|tr
-    Something that could stop you or hurt you: how likely it is, how bad it would be, and what is left once it is controlled.
+    > Something that could stop you or hurt you: how likely it is, how bad it would be, and what is left once it is controlled.
     s+!                                                   Name|Risk|e.g. "Losing income if I get sick"
     s!                                                    Cause|Cause|Why it might happen
     s!                                                    Consequence|Consequence|What would happen if it did
@@ -472,11 +488,11 @@ t Risk|tr
 ```
 Every risk has a Severity, including financial ones, so that all risks can be ranked together by RiskScore. A financial risk also has a FinancialImpact in money, which gives its ExpectedLoss. Each field has one unit: Severity is always 1 to 10, and FinancialImpact is always money.
 * t Control|trc
-    Something you do to stop a risk happening, or to limit the damage if it does.
+    > Something you do to stop a risk happening, or to limit the damage if it does.
     **Definition**
 ```bss
 t Control|trc
-    Something you do to stop a risk happening, or to limit the damage if it does.
+    > Something you do to stop a risk happening, or to limit the damage if it does.
     s+!             Name|Control|e.g. "Take out income protection insurance"
     ControlType+!   ControlType|Type|Prevent stops the risk happening. ReduceImpact limits the damage if it does.
     i!|0..100       Effectiveness|Effectiveness (%)|How much of the risk you expect this control to remove
@@ -486,11 +502,11 @@ t Control|trc
 ```
 Effectiveness and Cost are used together to decide whether a control is worth doing. A Prevent control lowers the residual likelihood of its risk, and a ReduceImpact control lowers its residual severity or financial impact.
 * t Assessment|ta
-    A snapshot of where you are now, so that you can compare it later.
+    > A snapshot of where you are now, so that you can compare it later.
     **Definition**
 ```bss
 t Assessment|ta
-    A snapshot of where you are now, so that you can compare it later.
+    > A snapshot of where you are now, so that you can compare it later.
     s+!             Name|Assessment|e.g. "Health check"
     dd=today        Date|Date|When the measurements were taken
     ts              Schedule|Repeats|How often to take the snapshot
@@ -498,11 +514,11 @@ t Assessment|ta
     l:tcm           Comments|Comments|Optional. Notes about this snapshot
 ```
 * t AssessedItem|tai
-    One thing you measure in an assessment.
+    > One thing you measure in an assessment.
     **Definition**
 ```bss
 t AssessedItem|tai
-    One thing you measure in an assessment.
+    > One thing you measure in an assessment.
     s+!!            Name|Measure|e.g. Weight. Locked in copies so that results stay comparable.
     s!              Area|Area|The part of life it belongs to, e.g. Health
     s!              Unit|Unit|e.g. kg, $, or 1-10 for a rating
@@ -511,11 +527,11 @@ t AssessedItem|tai
     l:tcm           Comments|Comments|Optional. Notes about the measurement, such as anything unusual on the day
 ```
 * t Comment|tcm
-    A comment on an item: who said what, and when. Comments let people add their thoughts to an item without changing its description, and they are never required. The built-in item types, such as TaskItem, Goal, Risk and Contact, already have a list of comments. To give your own types comments, add `l:tcm Comments`.
+    > A comment on an item: who said what, and when. Comments let people add their thoughts to an item without changing its description, and they are never required. The built-in item types, such as TaskItem, Goal, Risk and Contact, already have a list of comments. To give your own types comments, add `l:tcm Comments`.
     **Definition**
 ```bss
 t Comment|tcm
-    A comment on an item: who said what, and when.
+    > A comment on an item: who said what, and when.
     s+        Name|Comment|What you want to say
     d=now     Date|Date|When the comment was made
     r:tu=me   Author|Author|Who made the comment
@@ -527,11 +543,11 @@ Because the date and the author are filled in for you, most comments are a singl
     * Agreed, I will test it on my old phone|2026-10-02T09:30|[[Sam Jones]]
 ```
 * t Schedule|ts
-    A schedule says when a new copy of an item should be created. See Schedules for how to write one.
+    > A schedule says when a new copy of an item should be created. See Schedules for how to write one.
     **Definition**
 ```bss
 t Schedule|ts
-    A schedule says when a new copy of an item should be created.
+    > A schedule says when a new copy of an item should be created.
     s Name|Name|A short name for the schedule, e.g. "Monthly check-in"
     Frequency Repeats|Repeats|How often a new copy is created
     i|1.. Every|Every|Repeat every N periods: 1 is every month, 2 is every other month. Missing means 1.
@@ -549,17 +565,19 @@ ContactDetailType - used in contact detail to select a type.
 **definition**
 ```bss
 c ContactDetailType
+    > The kind of contact detail, such as an email address or a phone number
     Email
-    PhoneNumber
-    WorkPhone
-    MobilePhone
-    SocialMediaUrl
+    PhoneNumber|Phone number
+    WorkPhone|Work phone
+    MobilePhone|Mobile phone
+    SocialMediaUrl|Social media
     Address
     Other
 ```
 Frequency is the choice for setting up schedules
 ```bss
 c Frequency
+    > How often a schedule repeats
     Daily
     Weekly
     Monthly
@@ -569,17 +587,19 @@ c Frequency
 TaskStatus is the set of statuses that a task can be in: used for the kanban board and tracking projects
 ```bss
 c TaskStatus
-    ToDo
-    InProgress
-    InReview
-    Blocked
-    OnHold
-    Done
-    Dropped
+    > Where a task is up to
+    ToDo|To do|Not started yet
+    InProgress|In progress|Someone is working on it
+    InReview|In review|Finished, and waiting to be checked
+    Blocked|Blocked|Can not go on until something else happens
+    OnHold|On hold|Paused on purpose
+    Done|Done|Finished
+    Dropped|Dropped|Will not be done
 ```
 RiskType is the main kind of harm a risk would cause
 ```bss
 c RiskType
+    > The main kind of harm a risk would cause
     Social
     Financial
     Emotional
@@ -590,15 +610,16 @@ c RiskType
 ControlType says how a control deals with a risk
 ```bss
 c ControlType
-    Prevent
-    ReduceImpact
+    > How a control deals with a risk
+    Prevent|Prevent|Stops the risk from happening
+    ReduceImpact|Reduce impact|Limits the damage if the risk does happen
 ```
 
 ### Extending types
 It can often be the case that you want some new peice of data on an existing type. For example, in the Task you may want to add a new element to allow you to delegate that task to a contact. In this case it is better, in fact essential, to extend the task rather than copy and paste it's definition, so that the system can still recognise the item as a task. Here is how you would implement such a change:
 ```bss
 x DelegatedTask:TaskITem|udt
-    A task that can be delegated to a contact: useful for team management and sharing tasks.
+    > A task that can be delegated to a contact: useful for team management and sharing tasks.
     tc DelegatedTo|Delegate|The person that is responsible for the task completion.
 ```
 The declaration of this is similar to the declaration of a normal type, but starts with x and must have a colon between the name of the new type and the type that it extends. The description of this new type will be used instead of the description of the type that it extends. All other elements can be appended in the same manner as they are declared in a normal complex type. Any duplicates are simply ignored.
@@ -608,7 +629,7 @@ An extended type can be used anywhere the type it extends can be used. For examp
 An extended type can also say that a list it got from the original type holds its own kind of item. This is the one case where a repeated element is not ignored. For example, a ticket's sub-tasks should be tickets too, with their own comments and links:
 ```bss
 x Ticket:TaskItem|uti
-    A piece of work in a project. A big ticket can be broken down into sub-tickets.
+    > A piece of work in a project. A big ticket can be broken down into sub-tickets.
     l:uti   SubTasks|Sub-tickets|Smaller tickets that make up this one
 ```
 The list can only be changed to hold an extension of the type it held before. A list of tickets is still a list of tasks, so everything that works with tasks, such as the kanban board, still works.
@@ -616,7 +637,7 @@ The list can only be changed to hold an extension of the type it held before. A 
 Simple types can be extended too. This is how a rule is given a name, so that people can use it without having to read or write it. The rules are written after the alias, each starting with a pipe. For example, an email address is text that matches a pattern:
 ```bss
 x EmailAddress:s|em|/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
-    An email address, such as name@example.com
+    > An email address, such as name@example.com
 ```
 Anyone can now use `em` like any other type, without knowing the pattern:
 ```bss
@@ -628,6 +649,7 @@ An extended simple type only adds rules and a description. It has no elements. I
 For a name to be valid, these simple rules must be followed:
 * Names must start with a letter or underscore (_).
 * Names can contain alpha-numeric characters and the underscore (_).
+* Names are not case sensitive, so `Goal`, `goal` and `GOAL` are the same name. This applies to the names of types, aliases, elements, choices and functions.
 
 ## Brainstorm documents
 A brainstorm document is a text document, similar to markdown, that allows us to quickly list items in meaningful ways, without having to do data capture on some form or spreadsheet. This saves us from having to navigate between controls on pages, click save a hundred times and wait for excel to think when we want to add an item.
@@ -653,7 +675,7 @@ The rules are:
 * Only the first colon on a line separates the name from the value, so values can contain colons, as in `DueTime: 9:00 am`.
 * A list element is written as its name and a colon with no value, followed by its items, each starting with `*`.
 * A list item has the type of its list, unless it uses an element that only an extension of that type has. Then it becomes that extension. For example, in a list of tasks, an item with a `DelegatedTo:` line becomes a DelegatedTask (see Extending types).
-* To choose the type of a list item yourself, start the item with the type and a colon, e.g. `* udt: Book the venue`. This makes the item a DelegatedTask even before you know who to delegate it to. It is also how to choose when two extensions share an element name and the system can not tell which one is meant. Until you choose, such an item is flagged.
+* To choose the type of a list item yourself, start the item with the type and a colon, e.g. `* udt: Book the venue`. A word that is not a type the list can hold is just part of the item's text, so `* Achieved: I reached 3rd dan` is a comment that starts with "Achieved". This makes the item a DelegatedTask even before you know who to delegate it to. It is also how to choose when two extensions share an element name and the system can not tell which one is meant. Until you choose, such an item is flagged.
 * Wherever a document names a type, its alias can be used instead. `udt: Book the venue` and `DelegatedTask: Book the venue` mean the same thing.
 * A complex element, such as a Schedule, can use shorthand after its colon. Its other elements are indented one level further below it.
 * Values on the line follow the order the elements are declared in the type, starting at Name. The type description belongs to the type, not to each item, so it never takes a position.
@@ -707,12 +729,34 @@ The rules for links are:
 * A link to an item that does not exist, or to a name that is not unique, is flagged.
 * A link never owns the item it points to. Deleting an item does not delete the items that link to it: their links are flagged instead.
 * Links that go round in a circle, such as two tickets that each depend on the other, are flagged.
+* An item name containing `/`, `[` or `]` is pointed out, because a link can not reach it. `/` separates the names in a link, and brackets end one.
+* Tags are not part of a name when it is linked to (see Tags).
 * When an item is copied, a link to another item inside the copy points to that item's copy. A link to an item outside the copy still points to the original.
 
 Renaming an item in a text editor does not update the links to it, because the document only holds names. Those links are flagged when the document is imported, until they are changed to the new name.
 
+### Tags
+A tag is a `#` followed by a name, such as `#budget`. Tags can be written in any text: names, descriptions, other text values and notes. They make items easy to find:
+```bsd
+Goal: Book a holiday #family
+    Actions:
+    * Find a sunny destination #budget
+    * Book the flights #budget #urgent
+```
+The rules for tags are:
+* A tag starts at the beginning of the text or after a space, and follows the name rules. So `C#`, `Room #4` and a heading such as `# Plans` are not tags.
+* Tags are not case sensitive, so `#Budget` and `#budget` are the same tag.
+* A tag belongs to the item whose text it is in. The items inside it do not get its tags.
+* Tags stay in the text as they are written, and the app shows them as labels. A link leaves them out, so `[[Book the flights]]` finds the last item above.
+
+In the app, tags are used to filter the tree, the kanban board and My tasks.
+
 ### When problems are reported
-In the default import mode, import never fails (see Importing and exporting for the stricter modes). A value the system can not understand, such as `Weight: about 80`, an expected value that is missing, or a value that breaks a rule, is kept as written and flagged so it can be fixed later in the document or in structured mode. While writing, flags are quiet hints. They are pointed out again when an item is marked as done, but nothing is blocked.
+In the default import mode, import never fails (see Importing and exporting for the stricter modes). A value the system can not understand, such as `Weight: about 80`, an expected value that is missing, or a value that breaks a rule, is kept as written and flagged so it can be fixed later in the document or in structured mode. Nothing written is ever lost:
+* An element the item's type does not have, such as `Mood: happy` on a task, is kept with anything indented below it, and flagged. If a new version of a structure renames an element, the old value is still there to move across.
+* A line inside an item that is neither an element nor a list item is kept as a note, and flagged.
+
+While writing, flags are quiet hints. They are pointed out again when an item is marked as done, but nothing is blocked.
 
 Publishing and scheduling are stricter, because other people and future copies depend on the plan being complete. A program can not be published while its plan has problems, and a schedule does not create a copy while the original's plan has problems. The author is told what needs fixing.
 
@@ -725,7 +769,7 @@ Out of the box, all strucuters inherit tasks, goals, risks, controls, contacts, 
 The system allows users to keep a catalog of Brainstorm structure documents (on disk or in a database) and a catalog of brainstorms. Some brainstorms, like assessment-style brainstorms must support repeating so that the assessed items can be measured and compared against historic values. For example, give an assessment style structure as follows:
 ```bss
 t LifeCheck|ulc
-    A regular check of my health, weight and wealth
+    > A regular check of my health, weight and wealth
     s+! Name|Name|What this check is called
     n! TargetWeight|Target Weight (kg)|The weight I am aiming for
     ts Schedule|Schedule|How often I do this check
@@ -901,20 +945,20 @@ This section is for authors of structure documents who find themselves writing t
 A function is a formula with a name. It lets a formula be written once and used in any calculated value or condition. A function that returns true or false is sometimes called a predicate, and it is used in conditions. There is only one kind of declaration, and the result type tells you which kind of function it is.
 
 ### Declaring a function
-A function is declared with a line starting with f, followed by the alias of the type it returns, the name of the function and its parameters in brackets. The next line is a description, and the last line is the formula, starting with `=`:
+A function is declared with a line starting with f, followed by the alias of the type it returns, the name of the function and its parameters in brackets. The lines below it that start with `>` are its description, and the last line is the formula, starting with `=`:
 ```
 f resultAlias FunctionName([alias parameterName[, alias parameterName]*])
-    description
+    > description
     = formula
 ```
 For example, a calculation and a predicate:
 ```bss
 f n PercentOf(n Percent, n Amount)
-    A percentage of an amount, e.g. 50% of 10,000 is 5,000
+    > A percentage of an amount, e.g. 50% of 10,000 is 5,000
     = Percent / 100 * Amount
 
 f b OnOrAfter(dd Later, dd Earlier)
-    True when the later date is the same as or after the earlier one
+    > True when the later date is the same as or after the earlier one
     = Later >= Earlier
 ```
 A function is used by writing its name followed by the values to give it, in brackets:
@@ -922,7 +966,7 @@ A function is used by writing its name followed by the values to give it, in bra
 n=(PercentOf(Likelihood, Impact))   RiskScore|Risk Score|The cost of the risk once its likelihood is taken into account
 dd|(OnOrAfter(EndDate, StartDate))  EndDate|Ends|When the project ends which must be on or after the day it starts
 ```
-The description is required. A function without one can not be understood by the next person who reads it, and it is shown as help wherever the function is used. A description can span several lines using `"""`, just like a type description.
+The description is required. A function without one can not be understood by the next person who reads it, and it is shown as help wherever the function is used. A description can run over several lines, each starting with `>`, just like a type description.
 
 ### The rules for functions
 * A function is a single formula. It has no statements, variables or loops. The formula can use everything a calculated value or condition can.

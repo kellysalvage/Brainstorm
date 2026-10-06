@@ -4,7 +4,7 @@ A sales plan covers a period, such as a quarter, and has a target: how much you 
 
 ```bss
 t SalesPlan|usl
-    A sales plan for a period: what you aim to sell.
+    > A sales plan for a period: what you aim to sell.
     s+                          Name|Plan|e.g. "Sales Q4 2026"
     dd                          StartDate|Starts|The first day of the period
     dd|(EndDate >= StartDate)   EndDate|Ends|The last day of the period
