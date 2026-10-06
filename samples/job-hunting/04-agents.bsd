@@ -5,7 +5,7 @@ structure: job-hunting.bss
 
 Two recruitment agents are now looking for jobs for me. Agents are easy to lose touch with, so each one has a follow-up that repeats: I call Sarah at GreenTalent every Monday, and Dev at Apex Project People every other Wednesday.
 
-Sarah has already put me forward for a role at Tidal Works. The application links to her agency, so I can see which jobs came through which agent.
+Sarah has already put me forward for a role at Tidal Works. Tidal Works now records GreenTalent as the one agent allowed to put me forward there, and since when. If a second agency sent my CV too, Tidal Works could turn me down for both, so I check the company before I say yes to any agent.
 
 JobSearch: Project manager in renewable energy|Project Manager|65000|2026-10-05|2027-01-31|15000|3200
     Companies:
@@ -27,9 +27,9 @@ JobSearch: Project manager in renewable energy|Project Manager|65000|2026-10-05|
         * PMO Manager|||66000|4
             Comments:
             * The advert closes on 2026-10-30. Ask around before applying.
-    * Tidal Works|Tidal energy projects|https://example.com/tidalworks/careers
+    * Tidal Works|Tidal energy projects|https://example.com/tidalworks/careers|[[GreenTalent Recruitment]]|2026-10-09
         Applications:
-        * Project Manager|Applied|2026-10-09|65000|4|[[GreenTalent Recruitment]]
+        * Project Manager|Applied|2026-10-09|65000|4
             CV: [CV for project manager roles](cv/jordan-reyes-project-manager.pdf)
     Agents:
     * GreenTalent Recruitment|[[Sarah Khan]]|Project manager roles in renewable energy, 60,000 to 70,000

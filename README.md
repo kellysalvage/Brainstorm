@@ -292,7 +292,7 @@ A choice is a named list of values, such as the months of the year. Choices are 
 ```
 c ChoiceName
     [> description]*
-    [valueName[|caption][|description]]*
+    [[+|-] valueName[|caption][|description]]*
 ```
 Each value is a name, and follows the name rules. Like an element, it can have a caption and a description:
 * The caption is what the app shows, for example in a drop-down list. Without one, the name is shown.
@@ -301,6 +301,8 @@ Each value is a name, and follows the name rules. Like an element, it can have a
 In a brainstorm document, a value can be written as its name or its caption, in any case, so `Status: InProgress` and `Status: in progress` mean the same thing. When a brainstorm is written out as a document, the name is used. Formulas and conditions always use the name.
 
 Choices do not have aliases, because they are written in full in documents.
+
+A value can start with `+` or `-` to mark it as an outcome. Outcomes are only used by pipelines (see Pipelines).
 
 To define the Months choice for example, we have the following:
 ```bss
@@ -325,6 +327,28 @@ t MyType|umt
     > An example type that offers a chice of Months
     Months TheMonth|The Month|The month selected for fun
 ```
+
+### Pipelines
+Some items move through stages, such as a deal that goes from Lead to Won, or a job application that goes from Applied to an offer. An element that holds an item's stage is written with `p:` in front of its choice, and the app can show those items as a pipeline: a column for each stage, with the items that are at that stage.
+```bss
+c DealStage
+    > Where a deal is up to
+    Lead
+    Qualified
+    Proposal
+    Negotiation
+    + Won|Won|The client signed
+    - Lost|Lost|The client said no, or went quiet
+```
+```bss
+p:DealStage=Lead   Stage|Stage|How far the deal has got
+```
+The rules for pipelines are:
+* The stages are the choice's values, in the order they are declared. The first value is where the pipeline starts.
+* An outcome is a value that ends the pipeline: `+` marks a good outcome and `-` a bad one. The app uses them to show, for example, how many deals were won out of all the deals that finished. Outcome columns are shown last.
+* `p:` can only be used with a choice that has at least one `+` outcome.
+* A type can have only one pipeline element, counting the ones it gets from the type it extends.
+* An element without `p:` can use the same choice as an ordinary list of values. The `+` and `-` marks then mean nothing.
 
 ### Built-in simple types
 The following types are built in and the names are reserved:
@@ -381,6 +405,8 @@ The file can be one that has been uploaded to Brainstorm, or a link to a file el
     > A generic list of objects where x is the name or alias of the objects that the list holds
 * t Reference<T>|r:x
     > A link to an item of type x that lives somewhere else in the brainstorm, such as a ticket that another ticket depends on. A list of links is written `l:r:x`. See Links.
+* t Pipeline<T>|p:x
+    > The stage of an item that moves through the stages of the choice x. See Pipelines.
 * t TaskItem|tt
     > A task object that we can use in kanban boards
 **Definition**
@@ -548,7 +574,7 @@ Because the date and the author are filled in for you, most comments are a singl
 ```bss
 t Schedule|ts
     > A schedule says when a new copy of an item should be created.
-    s Name|Name|A short name for the schedule, e.g. "Monthly check-in"
+    s Name|Name|A short name for the schedule, written as something to do, e.g. "Monthly check-in". A copy that is not a task is listed in the user's tasks as "Do" and this name.
     Frequency Repeats|Repeats|How often a new copy is created
     i|1.. Every|Every|Repeat every N periods: 1 is every month, 2 is every other month. Missing means 1.
     dd StartDate|Starts|The date of the first copy. It also sets the day, e.g. starting on the 5th means monthly on the 5th. It can be a relative date, such as +1d.
@@ -593,8 +619,8 @@ c TaskStatus
     InReview|In review|Finished, and waiting to be checked
     Blocked|Blocked|Can not go on until something else happens
     OnHold|On hold|Paused on purpose
-    Done|Done|Finished
-    Dropped|Dropped|Will not be done
+    + Done|Done|Finished
+    - Dropped|Dropped|Will not be done
 ```
 RiskType is the main kind of harm a risk would cause
 ```bss
@@ -780,13 +806,19 @@ t LifeCheck|ulc
 ```
 
 ### Importing and exporting
-A brainstorm can be written out as a document at any time, edited in any text editor, and imported again. The system does not try to match the items in an imported document with the items it already has: the text may be very different from what was written out. Every import creates a new brainstorm, and the user chooses what happens to the old one:
-* **Replace it.** The old brainstorm is deleted and the imported one takes its place. This is the usual choice.
-* **Keep both.** The imported brainstorm is given a different name.
+A brainstorm is set up from a document, and then managed in the app. It can be written out as a document at any time, edited in any text editor, and imported again. A document is imported in one of two ways:
+* **As a new brainstorm.** Everything in the document is added.
+* **Into an existing brainstorm**, to update it. The items in the document are matched with the items already there, so that their history is kept (see History).
 
-Replacing loses almost nothing, because nearly everything is in the document: items, statuses, comments, copies made by schedules, and links. Calculated values are not in the document, but they are worked out again on import. Links only reach items in the same brainstorm, so replacing one brainstorm never breaks the links in another.
+Items are matched by name. An item matches the item of the same type with the same name in the same place: under the matching parent, and in the same list. Names are compared ignoring case and tags. A matched item takes the values in the document, an item that is only in the document is added, and an item that is only in the brainstorm is deleted.
 
-Importing over an existing brainstorm and reconciling the changes item by item may be added later, if it turns out to be needed.
+So renaming an item in a document means "delete this one and add that one", and the old item's history would go with it. Before an import goes ahead, the app lists what will be added and what will be deleted, and the user can pair a deleted item with an added one to say it was renamed. Two items with the same name in the same place can not be matched by name, so the user pairs them in the same way.
+
+A new copy of a templated item is added rather than matched. A new item named after an original in the same list, followed by a date, as copies are named (see Occurrences and starts), is imported as a new copy of it: its plan comes from the original, and its other values from the document. For example, `* Where I am 2026-12-04`, written in the same list as `Where I am`, adds this month's assessment. Copies already in the brainstorm are matched by their dated names, like any other item.
+
+Editing a brainstorm as text in the app works the same way: saving the text imports it into the brainstorm.
+
+Calculated values are not in the document, but they are worked out again on import. Links only reach items in the same brainstorm, so importing into one brainstorm never breaks the links in another.
 
 #### Import modes
 How carefully an import is checked is up to the user. Each user chooses a default mode in their settings, and can choose a different mode for any single import.
@@ -808,6 +840,15 @@ Later, an organisation may be able to require a minimum mode for its members, fo
 When a document links to a user by email address, such as `[[sam@example.com]]`, and nobody with that address uses Brainstorm, the app can invite them. Invitations are never sent automatically: the app lists the unknown addresses, and the importing user chooses who to invite. Each person invited gets one email.
 
 Until they join, the link points to a pending user. A pending user counts as found, so the import is not refused in the referential or strict modes. When the person joins, everything already linked to them, such as the tasks assigned to them, is waiting in their account.
+
+### History
+Some things change over time, and some are taken again and again. The app treats them differently:
+* **Things that change**, such as goals, tasks, deals and job applications, keep a history: each change to each element, with the old and new values, when it was made and who made it, and when the item was added or deleted. This shows, for example, how long deals stay at each stage, or how many job applications turn into interviews.
+* **Copies made from a template**, such as each month's assessment or each evening's review, are snapshots. Each one is the truth at the moment it was taken, and the next copy shows what changed since, so the copies themselves are the history. Weight over a year is the weight in each month's copy. Their changes are not tracked, and nothing is locked: people are trusted to be honest with themselves.
+
+A program someone has started is their own plan to manage, so it keeps a history like anything else that changes. Only the copies made by schedules, or by hand, are snapshots.
+
+History is kept by the app, not written in documents. A document is a snapshot of how things are now. History belongs to the brainstorm: it is deleted with the brainstorm, or earlier if the user sets a retention policy.
 
 ### Repeating items
 Structures are a way of knowing what tasks need to be done and why. Repeating an item is how the system creates the next round of tasks.
@@ -844,6 +885,8 @@ The one difference between the two kinds of copy is what happens to the schedule
 No occurrence is created while the original's plan has problems. See When problems are reported. A scheduled date that passes while the plan has problems is skipped. It is not caught up automatically once the plan is fixed.
 
 A user can also create an occurrence by hand, for example to make up for a skipped date. The user picks the date of the copy, which defaults to today. The plan must have no problems, just as for a scheduled occurrence. Creating an occurrence by hand does not change the schedule.
+
+A scheduled occurrence of an item that is not a task, such as a monthly assessment, still needs doing. So it appears in the user's tasks as "Do" followed by the name of its schedule, such as "Do Monthly check", with a link to the occurrence in the web app, where it is filled in. It leaves the user's tasks once none of its expected values are missing, or when the user ticks it off.
 
 To follow your own program, you start it like anyone else.
 

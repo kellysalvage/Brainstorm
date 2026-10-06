@@ -75,10 +75,10 @@ FocusPlan: Kelly's Fearless Focus plan
     DailyReviews:
     * Evening review
         Guide: Take some time in the evening to review your day. Write down what you did, the progress you made, how you felt and anything worth remembering. Note what you are grateful for, so that you can read it again tomorrow morning, and the tasks and ideas for tomorrow.
-        Schedule: Every evening|Daily||2026-10-05
+        Schedule: Evening review|Daily||2026-10-05
             DueTime: 9:00 pm
     WeeklyReviews:
     * Weekly planning
         Guide: Look at how far you got with this week's tasks, and measure your progress against last week. Do more of the actions that work and drop the ones that do not. If you took no action at all, ask whether it was time or fear that held you back. Then plan only what you can really do in the coming week.
-        Schedule: Every week|Weekly||2026-10-05
+        Schedule: Weekly planning|Weekly||2026-10-05
             DueTime: 6:00 pm

@@ -37,41 +37,43 @@ t JobSearch|ujs
 
 ## Companies and applications
 
-A company holds your applications to it, so the list of companies is the list of everywhere you have applied. Each application keeps the CV and cover letter you sent, so that you always know which version a company has seen.
+A company holds your applications to it, so the list of companies is the list of everywhere you have applied. It also records the one agent allowed to put you forward to it. A company that gets your CV from two agents, or from an agent and from you, may turn you down for both, and agencies' claims on a candidate can last a year or more. Each application keeps the CV and cover letter you sent, so that you always know which version a company has seen.
 
 ```bss
 c ApplicationStage
+    > How far a job application has got
     Interested
     Applied
     Screening
     Interview
     Offer
-    Accepted
-    Rejected
-    Withdrawn
+    + Accepted|Accepted|You took the job
+    - Rejected|Rejected|The company turned you down
+    - Withdrawn|Withdrawn|You pulled out
 
 t Company|ucy
     > A company you are interested in or have applied to.
     s+        Name|Company|The company's name
     s         Sector|Sector|What the company does
     s         Website|Website|The company's website or careers page
+    r:uag     RepresentedBy|Represented By|The one agent allowed to put you forward here. Leave it empty if you apply yourself. Never let a second agent send your CV.
+    dd        RepresentedSince|Since|When you agreed that this agent could put you forward here. Ask the agency how long its claim lasts.
     l:uap     Applications|Applications|The jobs you have applied for here
     l:tcm     Comments|Comments|Notes about the company
 
 t Application|uap
     > A job you are interested in or have applied for.
-    s+                          Name|Role|The job title
-    ApplicationStage=Interested Stage|Stage|How far the application has got
-    dd                          AppliedOn|Applied On|When you applied
-    n|0..                       Salary|Salary|The salary on offer
-    i|1..5                      Fit|Fit|How well the job fits what you want, from 1 to 5
-    r:uag                       Agent|Through Agent|The agent who put you forward, if there was one
-    s                           Advert|Job Advert|A link to the job advert
-    file                        CV|CV Sent|The CV you sent
-    file                        CoverLetter|Cover Letter|The cover letter you sent
-    l:uiv                       Interviews|Interviews|Your interviews for this job
-    l:tt                        NextSteps|Next Steps|What you need to do next
-    l:tcm                       Comments|Comments|Notes about the application
+    s+                              Name|Role|The job title
+    p:ApplicationStage=Interested   Stage|Stage|How far the application has got
+    dd                              AppliedOn|Applied On|When you applied
+    n|0..                           Salary|Salary|The salary on offer
+    i|1..5                          Fit|Fit|How well the job fits what you want, from 1 to 5
+    s                               Advert|Job Advert|A link to the job advert
+    file                            CV|CV Sent|The CV you sent
+    file                            CoverLetter|Cover Letter|The cover letter you sent
+    l:uiv                           Interviews|Interviews|Your interviews for this job
+    l:tt                            NextSteps|Next Steps|What you need to do next
+    l:tcm                           Comments|Comments|Notes about the application
 ```
 
 ## Interviews

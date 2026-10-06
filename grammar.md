@@ -19,6 +19,7 @@ The grammar uses the notation of the XML specification:
 | `( )` | a group |
 | `[a-z]` | one character in the range |
 | `[^\|]` | any one character except those listed |
+| `\t` `\n` `\\` `\]` | inside quotes or brackets: a tab, a line feed, a backslash and a closing bracket |
 
 ## How a structure document is read
 A structure document is read one line at a time, in two steps:
@@ -34,6 +35,7 @@ Names are not case sensitive. `Goal`, `goal` and `GOAL` are the same name, where
 ## The document
 ```ebnf
 StructureDocument ::= FrontMatter? ( Fence | DocumentationLine )*
+DocumentationLine ::= TextLine
 
 FrontMatter       ::= "---" EOL YamlLine* "---" EOL
 YamlLine          ::= TextLine
@@ -93,7 +95,7 @@ Element     ::= Indent ElementHead Space+ Name ( "|" Caption )? ( "|" ElementDes
 ElementHead ::= TypeRef Marks? DefaultValue? Rule*
               | TypeRef Calculation Rule*
 
-TypeRef     ::= ( "l:" | "r:" )* Name
+TypeRef     ::= ( "l:" | "r:" | "p:" )* Name
 Marks       ::= "+" | Lock | "+" Lock | Lock "+"
 Lock        ::= "!" | "!!"
 
@@ -105,6 +107,7 @@ ElementDescription ::= Text
 ```
 * The head is everything before the first space that is not inside brackets, quotes or a pattern. That is why a formula, a quoted default or a pattern can contain spaces.
 * A calculated value has no marks and no default.
+* `p:` can only come straight before the name of a choice that has a `+` outcome, and a type can have only one element with `p:`.
 * With one part after the name, it is the caption. With two, they are the caption and the description.
 * The description is the rest of the line, so it can contain pipes.
 
@@ -116,7 +119,7 @@ Range     ::= Bound? ".." Bound?
             | Bound
 Bound     ::= Number | Date | Time | DateTime
 
-Pattern   ::= "/" ( "\" Char | [^/\] )* "/"
+Pattern   ::= "/" ( "\\" Char | [^/\\] )* "/"
 Condition ::= "(" Formula ")"
 ```
 * A pattern ends at the first `/` that is not written as `\/`.
@@ -128,11 +131,13 @@ ChoiceDeclaration ::= "c" Space+ Name EOL
                       Description?
                       ChoiceValue*
 
-ChoiceValue       ::= Indent Name ( "|" Caption )? ( "|" ValueDescription )? EOL
+ChoiceValue       ::= Indent Outcome? Name ( "|" Caption )? ( "|" ValueDescription )? EOL
+Outcome           ::= ( "+" | "-" ) Space+
 ValueDescription  ::= Text
 ```
 * A value's caption and description work like an element's: with one part after the name it is the caption, and the description is the rest of the line.
 * In a brainstorm document, a value can be written as its name or its caption.
+* `+` marks a good outcome and `-` a bad one. They are only used when the choice is a pipeline.
 
 ### Functions
 ```ebnf
@@ -209,6 +214,7 @@ The grammar covers the first two steps. The third depends on the structure, so i
 BrainstormDocument ::= FrontMatter? ( Heading | Item | Note | NoteFence | BlankLine )*
 
 Heading            ::= "#" "#"? "#"? "#"? "#"? "#"? Space+ Text EOL
+Note               ::= TextLine+
 NoteFence          ::= Backticks Text? EOL TextLine* Backticks Space* EOL
 ```
 * The front matter's `structure` key holds a file path, a web address with an optional `@` and version number, or `built-in`.
@@ -216,12 +222,10 @@ NoteFence          ::= Backticks Text? EOL TextLine* Backticks Space* EOL
 * A note is any other text. A fenced block is always part of a note, so nothing inside it is read as an item.
 
 ### Lines
-Every line is one of four kinds:
+Every line is a labelled line, a list item line, a `BlankLine` or a `TextLine` (see Words and values):
 ```ebnf
 LabelledLine ::= Indent? Name Space* ":" ( Space* Value )? EOL
 ListItemLine ::= Indent? "*" Space+ ( Name Space* ":" Space* )? Value EOL
-BlankLine    ::= Space* EOL
-TextLine     ::= [^\n]* EOL
 ```
 * A labelled line is a name, a colon and an optional value. Only the first colon counts, so a value can contain colons, as in `DueTime: 9:00 am`.
 * A list item line starts with `*` and a space. `**bold**` has no space after the first `*`, so it is text.

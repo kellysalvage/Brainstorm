@@ -13,8 +13,8 @@ Video: coming soon.
 | 1 | `01-the-search.bsd` | The job, the salary, the deadline and the savings | How long the money will last, and the warning when it gets low |
 | 2 | `02-routine.bsd` | An application every weekday, networking twice a week and a Friday review | Habits that appear in your tasks on the right day |
 | 3 | `03-companies.bsd` | Four companies and the applications to them, with the CV sent to each | Tracking every company you have applied to |
-| 4 | `04-agents.bsd` | Two recruitment agents, with regular follow-ups, and a job they put Jordan forward for | Following up with agents, and linking jobs to the agent who found them |
-| 5 | `05-conversations.bsd` | Two people who can help, and a log of every conversation | Tracking who you have spoken to, and what to do next |
+| 4 | `04-agents.bsd` | Two recruitment agents, with regular follow-ups, and a job they put Jordan forward for | Following up with agents, and recording the one agent allowed to put you forward to each company |
+| 5 | `05-conversations.bsd` | Two people who can help, a log of every conversation, and an agent's offer Jordan turns down | Tracking who you have spoken to and what to do next, and never letting two agents send your CV to the same company |
 | 6 | `06-interviews.bsd` | Two interviews, with preparation, interviewers and how they went | Getting ready for interviews and learning from them |
 | 7 | `07-worries.bsd` | Fear of rejection, and of the money running out, with what to do about them | Facing worries as risks you can measure |
 | 8 | `08-progress.bsd` | A comment from the Friday review | Reading the numbers: responses, interviews and offers |

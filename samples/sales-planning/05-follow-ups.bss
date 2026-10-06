@@ -4,12 +4,13 @@ Deals are won by following up. A follow-up is a task, so it appears in "My tasks
 
 ```bss
 c DealStage
+    > Where a deal is up to
     Lead
     Qualified
     Proposal
     Negotiation
-    Won
-    Lost
+    + Won|Won|The client signed
+    - Lost|Lost|The client said no, or went quiet
 
 t SalesPlan|usl
     > A sales plan for a period: what you aim to sell, and who you will sell it to.
@@ -29,7 +30,7 @@ t Deal|udl
     > Something you hope to sell to a client.
     s+                               Name|Deal|e.g. "Website redesign"
     n+|0..                           Value|Value|What the deal is worth
-    DealStage=Lead                   Stage|Stage|How far the deal has got
+    p:DealStage=Lead                 Stage|Stage|How far the deal has got
     dd                               ExpectedClose|Expected Close|When you expect the client to decide
     i|0..100                         Probability|Probability (%)|How likely the deal is to be won
     n=(Value * Probability / 100)    WeightedValue|Weighted Value|What the deal is worth once its probability is taken into account
